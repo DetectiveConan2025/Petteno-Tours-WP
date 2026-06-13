@@ -1,17 +1,18 @@
 <?php
 /**
  * Sezione Hero: slideshow di sfondo, titolo, CTA, freccia scroll.
+ * Contenuti modificabili da Aspetto → Personalizza → Pettenò Tours → Hero.
  *
  * @package PettenoTours
  */
 
 $petteno_slides = array(
 	array(
-		'src' => petteno_tours_img( 'hero-1.jpg' ),
+		'src' => petteno_opt( 'hero_img_1' ),
 		'alt' => 'Pullman Pettenò Tours con palme al sole',
 	),
 	array(
-		'src' => petteno_tours_img( 'hero-2.jpg' ),
+		'src' => petteno_opt( 'hero_img_2' ),
 		'alt' => 'Pullman Pettenò Tours con panorama alpino',
 	),
 );
@@ -35,19 +36,15 @@ $petteno_slides = array(
 	<!-- Contenuto centrato -->
 	<div class="wrap hero-content">
 		<div class="hero-copy">
-			<span class="pill pill-light">Noleggio pullman con conducente · Veneto</span>
+			<span class="pill pill-light"><?php echo esc_html( petteno_opt( 'hero_badge' ) ); ?></span>
 			<h1>
-				Il tuo viaggio<br />
-				in <span class="accent-w">buone mani</span>.
+				<?php echo esc_html( petteno_opt( 'hero_title_l1' ) ); ?><br />
+				<?php echo esc_html( petteno_opt( 'hero_title_pre' ) ); ?> <span class="accent-w"><?php echo esc_html( petteno_opt( 'hero_accent' ) ); ?></span><?php echo esc_html( petteno_opt( 'hero_title_post' ) ); ?>
 			</h1>
-			<p class="lead">
-				Da Robegano di Salzano, Pettenò Tours porta gruppi, scuole e aziende
-				dove devono andare — in Italia e in tutta Europa, con pullman Gran
-				Turismo, Scuolabus e autisti esperti.
-			</p>
+			<p class="lead"><?php echo esc_html( petteno_opt( 'hero_lead' ) ); ?></p>
 			<div class="hero-actions">
-				<a href="#contatti" class="btn btn-white">Richiedi un preventivo</a>
-				<a href="#flotta" class="btn btn-ghost-white">Scopri la flotta</a>
+				<a href="#contatti" class="btn btn-white"><?php echo esc_html( petteno_opt( 'hero_cta1' ) ); ?></a>
+				<a href="#flotta" class="btn btn-ghost-white"><?php echo esc_html( petteno_opt( 'hero_cta2' ) ); ?></a>
 			</div>
 		</div>
 	</div>

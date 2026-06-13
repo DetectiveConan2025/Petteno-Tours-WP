@@ -122,7 +122,8 @@
         .catch(function () {
           hint.classList.add("error");
           hint.textContent =
-            "Errore nell'invio. Scrivici direttamente a pettenotours@gmail.com";
+            "Errore nell'invio. Scrivici direttamente a " +
+            (cfg.email || "pettenotours@gmail.com");
         })
         .then(function () {
           btn.disabled = false;

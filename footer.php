@@ -42,7 +42,7 @@ $petteno_cols = array(
 				</span>
 			</div>
 			<p><?php esc_html_e( 'Noleggio autobus con conducente per gruppi, scuole e aziende. In viaggio in Italia e in Europa, dal Veneto.', 'petteno-tours' ); ?></p>
-			<a href="#contatti" class="btn btn-primary footer-cta"><?php esc_html_e( 'Richiedi un preventivo', 'petteno-tours' ); ?></a>
+			<a href="#contatti" class="btn btn-primary footer-cta"><?php echo esc_html( petteno_opt( 'hero_cta1' ) ); ?></a>
 		</div>
 
 		<?php foreach ( $petteno_cols as $col ) : ?>
@@ -59,17 +59,17 @@ $petteno_cols = array(
 		<div class="footer-col">
 			<h3><?php esc_html_e( 'Contatti', 'petteno-tours' ); ?></h3>
 			<ul>
-				<li><a href="tel:+393489280768">+39 348 928 0768</a></li>
-				<li><a href="tel:+39041482231">041 482231</a></li>
-				<li><a href="mailto:pettenotours@gmail.com">pettenotours@gmail.com</a></li>
-				<li>Via Leonardo da Vinci 39/B, 30030 Salzano (VE)</li>
+				<li><a href="<?php echo esc_url( petteno_tel_href( petteno_opt( 'tel_mobile' ) ) ); ?>"><?php echo esc_html( petteno_opt( 'tel_mobile' ) ); ?></a></li>
+				<li><a href="<?php echo esc_url( petteno_tel_href( petteno_opt( 'tel_fisso' ) ) ); ?>"><?php echo esc_html( petteno_opt( 'tel_fisso' ) ); ?></a></li>
+				<li><a href="mailto:<?php echo esc_attr( petteno_opt( 'email' ) ); ?>"><?php echo esc_html( petteno_opt( 'email' ) ); ?></a></li>
+				<li><?php echo esc_html( petteno_address_full() ); ?></li>
 			</ul>
 		</div>
 	</div>
 
 	<div class="wrap footer-bottom">
-		<p>© <span id="footer-year"><?php echo esc_html( gmdate( 'Y' ) ); ?></span> Pettenò Tours S.a.s. di Pettenò Luca &amp; C. — P.IVA 02172370278</p>
-		<p>Via Leonardo da Vinci 39/B, 30030 Salzano (VE)</p>
+		<p>© <span id="footer-year"><?php echo esc_html( gmdate( 'Y' ) ); ?></span> <?php echo esc_html( petteno_opt( 'ragione_sociale' ) ); ?> — P.IVA <?php echo esc_html( petteno_opt( 'piva' ) ); ?></p>
+		<p><?php echo esc_html( petteno_address_full() ); ?></p>
 	</div>
 </footer>
 

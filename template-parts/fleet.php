@@ -5,34 +5,29 @@
  * @package PettenoTours
  */
 
-$petteno_fleet = array(
-	array(
-		'name'     => 'Gran Turismo',
-		'seats'    => '48 – 54 posti',
-		'photo'    => petteno_tours_img( 'hero-1.jpg' ),
-		'photoAlt' => 'Pullman Gran Turismo Pettenò Tours',
-		'desc'     => 'Il pullman per i grandi gruppi e i lunghi tragitti. Poltrone reclinabili, ampia bagagliera e tutti i comfort per viaggiare riposati.',
-		'specs'    => array( 'Climatizzato', 'WC a bordo', 'Pedana disabili*' ),
-	),
-	array(
-		'name'     => 'Scuolabus',
-		'seats'    => '16 – 30 posti',
-		'photo'    => petteno_tours_img( 'hero-3.jpg' ),
-		'photoAlt' => 'Scuolabus Pettenò Tours',
-		'desc'     => 'Dedicato al trasporto scolastico, con tutte le omologazioni di legge. Puntuale, sicuro e confortevole per gli studenti.',
-		'specs'    => array( 'Omologato scuolabus', 'Climatizzato', 'Cinture di sicurezza' ),
-	),
-);
+// Contenuti modificabili dal Customizer (Pettenò Tours → Flotta).
+// Le dotazioni si inseriscono come elenco separato da virgole.
+$petteno_fleet = array();
+foreach ( array( 1, 2 ) as $n ) {
+	$specs              = array_filter( array_map( 'trim', explode( ',', petteno_opt( "fleet_{$n}_specs" ) ) ) );
+	$name               = petteno_opt( "fleet_{$n}_name" );
+	$petteno_fleet[]    = array(
+		'name'     => $name,
+		'seats'    => petteno_opt( "fleet_{$n}_seats" ),
+		'photo'    => petteno_opt( "fleet_{$n}_img" ),
+		/* translators: %s: nome del mezzo. */
+		'photoAlt' => sprintf( __( '%s — Pettenò Tours', 'petteno-tours' ), $name ),
+		'desc'     => petteno_opt( "fleet_{$n}_desc" ),
+		'specs'    => $specs,
+	);
+}
 ?>
 <section id="flotta" class="section fleet">
 	<div class="wrap">
 		<div class="section-head reveal">
-			<span class="kicker">La flotta</span>
-			<h2>Mezzi giusti, controllati, sempre puliti</h2>
-			<p class="lead">
-				Ogni veicolo passa la revisione e una pulizia accurata prima di ogni
-				partenza. Scegliamo con te la taglia migliore per il tuo gruppo.
-			</p>
+			<span class="kicker"><?php echo esc_html( petteno_opt( 'fleet_kicker' ) ); ?></span>
+			<h2><?php echo esc_html( petteno_opt( 'fleet_title' ) ); ?></h2>
+			<p class="lead"><?php echo esc_html( petteno_opt( 'fleet_lead' ) ); ?></p>
 		</div>
 
 		<div class="fleet-list">
@@ -56,6 +51,6 @@ $petteno_fleet = array(
 				</article>
 			<?php endforeach; ?>
 		</div>
-		<p class="fleet-note">* Allestimenti come pedana per disabili e WC dipendono dal mezzo: indicaci le tue esigenze e troviamo la soluzione adatta.</p>
+		<p class="fleet-note"><?php echo esc_html( petteno_opt( 'fleet_note' ) ); ?></p>
 	</div>
 </section>

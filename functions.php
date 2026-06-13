@@ -92,6 +92,7 @@ function petteno_tours_assets() {
 			'ajaxUrl' => admin_url( 'admin-ajax.php' ),
 			'nonce'   => wp_create_nonce( 'petteno_tours_preventivo' ),
 			'action'  => 'petteno_tours_preventivo',
+			'email'   => petteno_opt( 'email' ),
 		)
 	);
 }
@@ -139,21 +140,21 @@ function petteno_tours_head_meta() {
 	echo '<link rel="icon" href="' . esc_url( $theme_uri . '/assets/images/favicon.png' ) . '" type="image/png" />' . "\n";
 	echo '<link rel="apple-touch-icon" href="' . esc_url( $theme_uri . '/assets/images/apple-touch-icon.png' ) . '" />' . "\n";
 
-	// Dati strutturati: TravelAgency.
+	// Dati strutturati: TravelAgency (alimentati dalle opzioni del Customizer).
 	$jsonld = array(
 		'@context'    => 'https://schema.org',
 		'@type'       => 'TravelAgency',
-		'name'        => 'Pettenò Tours S.a.s. di Pettenò Luca & C.',
+		'name'        => petteno_opt( 'ragione_sociale' ),
 		'description' => $description,
-		'url'         => 'https://www.pettenotours.it',
-		'telephone'   => '+39 348 928 0768',
-		'email'       => 'pettenotours@gmail.com',
+		'url'         => home_url( '/' ),
+		'telephone'   => petteno_opt( 'tel_mobile' ),
+		'email'       => petteno_opt( 'email' ),
 		'address'     => array(
 			'@type'           => 'PostalAddress',
-			'streetAddress'   => 'Via Leonardo da Vinci 39/B',
-			'postalCode'      => '30030',
-			'addressLocality' => 'Salzano',
-			'addressRegion'   => 'VE',
+			'streetAddress'   => petteno_opt( 'via' ),
+			'postalCode'      => petteno_opt( 'cap' ),
+			'addressLocality' => petteno_opt( 'citta' ),
+			'addressRegion'   => petteno_opt( 'provincia' ),
 			'addressCountry'  => 'IT',
 		),
 	);
@@ -170,6 +171,135 @@ add_action( 'wp_head', 'petteno_tours_head_meta', 5 );
 function petteno_tours_img( $file ) {
 	return get_template_directory_uri() . '/assets/images/' . ltrim( $file, '/' );
 }
+
+/**
+ * Valori predefiniti di tutti i contenuti modificabili dal Customizer.
+ *
+ * Unica fonte di verità: usati sia come default dei controlli del Customizer,
+ * sia come fallback nei template. Se l'utente non personalizza nulla, il sito
+ * mostra esattamente i contenuti originali.
+ *
+ * @return array
+ */
+function petteno_tours_defaults() {
+	return array(
+		// --- Azienda e contatti (riusati in Contatti, Footer, JSON-LD) ---
+		'ragione_sociale'  => 'Pettenò Tours S.a.s. di Pettenò Luca & C.',
+		'piva'             => '02172370278',
+		'tel_mobile'       => '+39 348 928 0768',
+		'tel_fisso'        => '041 482231',
+		'email'            => 'pettenotours@gmail.com',
+		'via'              => 'Via Leonardo da Vinci 39/B',
+		'cap'              => '30030',
+		'citta'            => 'Salzano',
+		'provincia'        => 'VE',
+		'maps_url'         => 'https://maps.google.com/?q=Via+Leonardo+da+Vinci+39B+30030+Salzano+VE',
+
+		// --- Hero ---
+		'hero_badge'       => 'Noleggio pullman con conducente · Veneto',
+		'hero_title_l1'    => 'Il tuo viaggio',
+		'hero_title_pre'   => 'in',
+		'hero_accent'      => 'buone mani',
+		'hero_title_post'  => '.',
+		'hero_lead'        => 'Da Robegano di Salzano, Pettenò Tours porta gruppi, scuole e aziende dove devono andare — in Italia e in tutta Europa, con pullman Gran Turismo, Scuolabus e autisti esperti.',
+		'hero_cta1'        => 'Richiedi un preventivo',
+		'hero_cta2'        => 'Scopri la flotta',
+		'hero_img_1'       => petteno_tours_img( 'hero-1.jpg' ),
+		'hero_img_2'       => petteno_tours_img( 'hero-2.jpg' ),
+
+		// --- Servizi (intestazione + 6 schede) ---
+		'serv_kicker'      => 'Cosa facciamo',
+		'serv_title'       => 'Un mezzo e un autista per ogni occasione',
+		'serv_lead'        => 'Dalla gita di un giorno al tour di una settimana, gestiamo noi mezzo, conducente e tempi. Tu pensi alle persone da portare.',
+		'serv_1_title'     => 'Gite ed escursioni turistiche',
+		'serv_1_desc'      => "Siamo specializzati nell'organizzazione di tour di gruppo e viaggi scolastici, ma offriamo anche soluzioni di trasporto personalizzate per soddisfare qualsiasi esigenza. I nostri autisti conoscono bene le rotte europee: viaggiate in sicurezza e comodità.",
+		'serv_2_title'     => 'Trasporti scolastici',
+		'serv_2_desc'      => 'Mettiamo a disposizione autobus, minibus e autisti esperti per garantire un servizio scolastico puntuale e sicuro, con la tranquillità dei genitori e il comfort degli studenti.',
+		'serv_3_title'     => 'Transfer aeroporti e stazioni',
+		'serv_3_desc'      => 'Collegamenti puntuali da e per Venezia, Verona, Bergamo, Bologna e le principali stazioni.',
+		'serv_4_title'     => 'Eventi e cerimonie',
+		'serv_4_desc'      => 'Matrimoni, congressi, concerti: navette dedicate perché nessuno pensi al parcheggio.',
+		'serv_5_title'     => 'Tour in Italia e in Europa',
+		'serv_5_desc'      => 'Itinerari di più giorni con un unico interlocutore: mezzo, autista e logistica coordinati.',
+		'serv_6_title'     => 'Trasferte aziendali',
+		'serv_6_desc'      => 'Shuttle per dipendenti, fiere e team building, con fatturazione e referente unico.',
+
+		// --- Flotta (intestazione + 2 mezzi + nota) ---
+		'fleet_kicker'     => 'La flotta',
+		'fleet_title'      => 'Mezzi giusti, controllati, sempre puliti',
+		'fleet_lead'       => 'Ogni veicolo passa la revisione e una pulizia accurata prima di ogni partenza. Scegliamo con te la taglia migliore per il tuo gruppo.',
+		'fleet_note'       => '* Allestimenti come pedana per disabili e WC dipendono dal mezzo: indicaci le tue esigenze e troviamo la soluzione adatta.',
+		'fleet_1_name'     => 'Gran Turismo',
+		'fleet_1_seats'    => '48 – 54 posti',
+		'fleet_1_desc'     => 'Il pullman per i grandi gruppi e i lunghi tragitti. Poltrone reclinabili, ampia bagagliera e tutti i comfort per viaggiare riposati.',
+		'fleet_1_specs'    => 'Climatizzato, WC a bordo, Pedana disabili*',
+		'fleet_1_img'      => petteno_tours_img( 'hero-1.jpg' ),
+		'fleet_2_name'     => 'Scuolabus',
+		'fleet_2_seats'    => '16 – 30 posti',
+		'fleet_2_desc'     => 'Dedicato al trasporto scolastico, con tutte le omologazioni di legge. Puntuale, sicuro e confortevole per gli studenti.',
+		'fleet_2_specs'    => 'Omologato scuolabus, Climatizzato, Cinture di sicurezza',
+		'fleet_2_img'      => petteno_tours_img( 'hero-3.jpg' ),
+
+		// --- Chi siamo (testo + 2 valori) ---
+		'about_kicker'     => 'Chi siamo',
+		'about_title'      => 'Attivi in tutto il territorio veneziano, dalla sede di Salzano',
+		'about_p1'         => "Pettenò Tours è un'azienda attiva in tutto il territorio veneziano, con la sede principale a Salzano (VE). Da sempre siamo appassionati di viaggi e sempre alla ricerca di nuove opportunità per scoprire luoghi nuovi e interessanti.",
+		'about_p2'         => "Siamo un'azienda dinamica e innovativa, sempre pronta ad affrontare nuove sfide e a offrire servizi di alta qualità. Siamo orgogliosi di essere un punto di riferimento per il trasporto di gruppi in tutto il Veneto e oltre, e ci impegniamo a soddisfare le esigenze di ogni singolo cliente per garantire che ogni viaggio sia indimenticabile.",
+		'about_cta'        => 'Parla con noi',
+		'about_val_1_title' => 'Sicurezza prima di tutto',
+		'about_val_1_desc'  => 'Mezzi revisionati, autisti con CQC e rispetto dei tempi di guida e riposo. Non si tratta sulla sicurezza.',
+		'about_val_2_title' => 'Una persona che risponde',
+		'about_val_2_desc'  => 'Niente call center. Parli con chi organizza davvero il tuo viaggio e ti segue fino al rientro.',
+
+		// --- Contatti (intestazione sezione) ---
+		'contact_kicker'   => 'Preventivo gratuito',
+		'contact_title'    => 'Raccontaci il viaggio, ti rispondiamo in giornata',
+		'contact_intro'    => 'Quante persone, da dove a dove, in che date. Bastano due righe e ti prepariamo un preventivo chiaro e senza impegno.',
+	);
+}
+
+/**
+ * Legge un'opzione del tema con fallback al default centralizzato.
+ *
+ * @param string $key Chiave dell'opzione.
+ * @return string
+ */
+function petteno_opt( $key ) {
+	$defaults = petteno_tours_defaults();
+	$default  = isset( $defaults[ $key ] ) ? $defaults[ $key ] : '';
+	return get_theme_mod( $key, $default );
+}
+
+/**
+ * Costruisce un href "tel:" a partire dal numero visualizzato.
+ *
+ * @param string $num Numero come mostrato (es. "+39 348 928 0768").
+ * @return string
+ */
+function petteno_tel_href( $num ) {
+	return 'tel:' . preg_replace( '/[^0-9+]/', '', $num );
+}
+
+/**
+ * Indirizzo completo: "Via …, CAP Città (PR)".
+ *
+ * @return string
+ */
+function petteno_address_full() {
+	return sprintf( '%s, %s %s (%s)', petteno_opt( 'via' ), petteno_opt( 'cap' ), petteno_opt( 'citta' ), petteno_opt( 'provincia' ) );
+}
+
+/**
+ * Indirizzo breve: "Via …, Città (PR)".
+ *
+ * @return string
+ */
+function petteno_address_short() {
+	return sprintf( '%s, %s (%s)', petteno_opt( 'via' ), petteno_opt( 'citta' ), petteno_opt( 'provincia' ) );
+}
+
+// Opzioni del Customizer (Aspetto → Personalizza → Pettenò Tours).
+require get_template_directory() . '/inc/customizer.php';
 
 /**
  * Gestione invio form preventivo (admin-ajax), sostituisce mail.php.

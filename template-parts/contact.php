@@ -5,32 +5,34 @@
  * @package PettenoTours
  */
 
-$petteno_contacts = array(
+// Recapiti dal Customizer (Pettenò Tours → Azienda e contatti).
+$petteno_phone_icon = '<path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.1-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.4-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2Z"/>';
+$petteno_contacts   = array(
 	array(
 		'label'  => 'Telefono',
-		'value'  => '+39 348 928 0768',
-		'href'   => 'tel:+393489280768',
+		'value'  => petteno_opt( 'tel_mobile' ),
+		'href'   => petteno_tel_href( petteno_opt( 'tel_mobile' ) ),
 		'target' => '',
-		'icon'   => '<path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.1-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.4-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2Z"/>',
+		'icon'   => $petteno_phone_icon,
 	),
 	array(
 		'label'  => 'Telefono fisso',
-		'value'  => '041 482231',
-		'href'   => 'tel:+39041482231',
+		'value'  => petteno_opt( 'tel_fisso' ),
+		'href'   => petteno_tel_href( petteno_opt( 'tel_fisso' ) ),
 		'target' => '',
-		'icon'   => '<path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.1-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.4-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2Z"/>',
+		'icon'   => $petteno_phone_icon,
 	),
 	array(
 		'label'  => 'Email',
-		'value'  => 'pettenotours@gmail.com',
-		'href'   => 'mailto:pettenotours@gmail.com',
+		'value'  => petteno_opt( 'email' ),
+		'href'   => 'mailto:' . petteno_opt( 'email' ),
 		'target' => '',
 		'icon'   => '<rect x="2" y="4" width="20" height="16" rx="3"/><path d="m3 6 9 7 9-7"/>',
 	),
 	array(
 		'label'  => 'Sede',
-		'value'  => 'Via Leonardo da Vinci 39/B, Salzano (VE)',
-		'href'   => 'https://maps.google.com/?q=Via+Leonardo+da+Vinci+39B+30030+Salzano+VE',
+		'value'  => petteno_address_short(),
+		'href'   => petteno_opt( 'maps_url' ),
 		'target' => '_blank',
 		'icon'   => '<path d="M12 21s-7-5.7-7-11a7 7 0 0 1 14 0c0 5.3-7 11-7 11Z"/><circle cx="12" cy="10" r="2.6"/>',
 	),
@@ -46,12 +48,9 @@ $petteno_svg_allowed = array(
 <section id="contatti" class="contact">
 	<div class="wrap contact-grid">
 		<div class="contact-intro">
-			<span class="kicker kicker-light">Preventivo gratuito</span>
-			<h2>Raccontaci il viaggio, ti rispondiamo in giornata</h2>
-			<p>
-				Quante persone, da dove a dove, in che date. Bastano due righe e ti
-				prepariamo un preventivo chiaro e senza impegno.
-			</p>
+			<span class="kicker kicker-light"><?php echo esc_html( petteno_opt( 'contact_kicker' ) ); ?></span>
+			<h2><?php echo esc_html( petteno_opt( 'contact_title' ) ); ?></h2>
+			<p><?php echo esc_html( petteno_opt( 'contact_intro' ) ); ?></p>
 
 			<ul class="contact-cards">
 				<?php foreach ( $petteno_contacts as $contact ) : ?>
