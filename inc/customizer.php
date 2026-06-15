@@ -126,11 +126,40 @@ function petteno_tours_sanitize_checkbox( $value ) {
 }
 
 /**
+ * Sanitizza una lista di ID allegati separati da virgola.
+ *
+ * @param string $value Valore grezzo.
+ * @return string
+ */
+function petteno_tours_sanitize_id_list( $value ) {
+	$ids = array_filter( array_map( 'absint', explode( ',', (string) $value ) ) );
+	return implode( ',', $ids );
+}
+
+/**
+ * Carica gli script del controllo "lista immagini" nel Customizer.
+ */
+function petteno_tours_customize_control_assets() {
+	wp_enqueue_media();
+	wp_enqueue_style( 'petteno-admin', get_template_directory_uri() . '/assets/css/admin.css', array(), PETTENO_TOURS_VERSION );
+	wp_enqueue_script(
+		'petteno-customizer-control',
+		get_template_directory_uri() . '/assets/js/customizer-control.js',
+		array( 'jquery', 'customize-controls' ),
+		PETTENO_TOURS_VERSION,
+		true
+	);
+}
+add_action( 'customize_controls_enqueue_scripts', 'petteno_tours_customize_control_assets' );
+
+/**
  * Registra pannello, sezioni e controlli.
  *
  * @param WP_Customize_Manager $wp Manager del Customizer.
  */
 function petteno_tours_customize_register( $wp ) {
+	require_once get_template_directory() . '/inc/class-petteno-image-list-control.php';
+
 	$wp->add_panel(
 		'petteno_tours',
 		array(
@@ -163,8 +192,27 @@ function petteno_tours_customize_register( $wp ) {
 	petteno_tours_add_text( $wp, 'petteno_hero', 'hero_lead', __( 'Testo descrittivo', 'petteno-tours' ), 'textarea' );
 	petteno_tours_add_text( $wp, 'petteno_hero', 'hero_cta1', __( 'Bottone principale (testo)', 'petteno-tours' ) );
 	petteno_tours_add_text( $wp, 'petteno_hero', 'hero_cta2', __( 'Bottone secondario (testo)', 'petteno-tours' ) );
-	petteno_tours_add_image( $wp, 'petteno_hero', 'hero_img_1', __( 'Foto slideshow 1', 'petteno-tours' ) );
-	petteno_tours_add_image( $wp, 'petteno_hero', 'hero_img_2', __( 'Foto slideshow 2', 'petteno-tours' ) );
+
+	// Slideshow a immagini illimitate (lista di ID allegati).
+	$wp->add_setting(
+		'hero_images',
+		array(
+			'default'           => '',
+			'sanitize_callback' => 'petteno_tours_sanitize_id_list',
+			'transport'         => 'refresh',
+		)
+	);
+	$wp->add_control(
+		new Petteno_Image_List_Control(
+			$wp,
+			'hero_images',
+			array(
+				'label'       => __( 'Immagini dello slideshow', 'petteno-tours' ),
+				'description' => __( 'Aggiungi quante foto vuoi: scorrono in dissolvenza. Se lasci vuoto, vengono usate le due foto predefinite.', 'petteno-tours' ),
+				'section'     => 'petteno_hero',
+			)
+		)
+	);
 
 	/* ---- Servizi ------------------------------------------------------- */
 	$wp->add_section( 'petteno_servizi', array( 'title' => __( 'Servizi', 'petteno-tours' ), 'panel' => 'petteno_tours' ) );
@@ -180,7 +228,14 @@ function petteno_tours_customize_register( $wp ) {
 	}
 
 	/* ---- Flotta -------------------------------------------------------- */
-	$wp->add_section( 'petteno_flotta', array( 'title' => __( 'Flotta', 'petteno-tours' ), 'panel' => 'petteno_tours' ) );
+	$wp->add_section(
+		'petteno_flotta',
+		array(
+			'title'       => __( 'Flotta', 'petteno-tours' ),
+			'panel'       => 'petteno_tours',
+			'description' => __( 'Intestazione della sezione. I veicoli ora si gestiscono dal menu “Mezzi” (aggiungi/riordina foto e dettagli). I due campi mezzo qui sotto si usano solo finché non hai creato nessun mezzo.', 'petteno-tours' ),
+		)
+	);
 	petteno_tours_add_checkbox( $wp, 'petteno_flotta', 'show_flotta', __( 'Mostra questa sezione nel sito', 'petteno-tours' ) );
 	petteno_tours_add_text( $wp, 'petteno_flotta', 'fleet_kicker', __( 'Occhiello', 'petteno-tours' ) );
 	petteno_tours_add_text( $wp, 'petteno_flotta', 'fleet_title', __( 'Titolo sezione', 'petteno-tours' ) );

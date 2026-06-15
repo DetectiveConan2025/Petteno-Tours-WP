@@ -77,9 +77,26 @@ standard di WordPress (`admin-ajax.php` + `wp_mail()`), con verifica del nonce:
 - **Logo** — di default `assets/images/logo.png`; impostando un logo da
   **Aspetto → Personalizza → Identità del sito** viene usato quello.
 - **Colori** — design token in `style.css` sotto `:root`.
-- **Foto** — hero e flotta in `assets/images/`.
-- **Contenuti** — testi e dati nei file in `template-parts/` e nei recapiti di
-  `footer.php`.
+- **Contenuti delle sezioni** — **Aspetto → Personalizza → Pettenò Tours**
+  (testi, foto, recapiti) con interruttori per mostrare/nascondere le sezioni.
+
+## Flotta gestita dall'admin (Mezzi)
+
+I veicoli sono un tipo di contenuto dedicato: menu **Mezzi** nella bacheca.
+
+- Ogni mezzo ha: titolo (nome), **foto principale** (immagine in evidenza),
+  posti, descrizione, dotazioni e un **album foto** (galleria).
+- La sezione Flotta li mostra in una **griglia che si adatta** al numero di
+  veicoli (1 → 2 → 3 colonne) e l'album si apre a tutto schermo (**lightbox**).
+- L'ordine si imposta con l'attributo «Ordine» della pagina.
+- Finché non crei nessun mezzo, la sezione usa i due veicoli predefiniti del
+  Customizer (così il sito resta valido out-of-the-box).
+
+## Slideshow hero a immagini illimitate
+
+In **Aspetto → Personalizza → Pettenò Tours → Hero** il campo «Immagini dello
+slideshow» permette di aggiungere quante foto vuoi: scorrono in dissolvenza con
+zoom. Se lasciato vuoto, vengono usate le due foto predefinite.
 
 ## Dati dell'azienda (reali)
 

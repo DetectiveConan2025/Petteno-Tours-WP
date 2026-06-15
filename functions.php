@@ -206,6 +206,7 @@ function petteno_tours_defaults() {
 		'hero_cta2'        => 'Scopri la flotta',
 		'hero_img_1'       => petteno_tours_img( 'hero-1.jpg' ),
 		'hero_img_2'       => petteno_tours_img( 'hero-2.jpg' ),
+		'hero_images'      => '', // Lista ID allegati; vuoto = usa le due foto sopra.
 
 		// --- Servizi (intestazione + 6 schede) ---
 		'serv_kicker'      => 'Cosa facciamo',
@@ -348,8 +349,22 @@ function petteno_tours_nav_links() {
 	return $links;
 }
 
+/**
+ * Spezza un testo in elementi (per riga o separati da virgola).
+ *
+ * @param string $str Testo grezzo.
+ * @return string[]
+ */
+function petteno_split_list( $str ) {
+	$parts = preg_split( '/[\r\n,]+/', (string) $str );
+	return array_values( array_filter( array_map( 'trim', $parts ) ) );
+}
+
 // Opzioni del Customizer (Aspetto → Personalizza → Pettenò Tours).
 require get_template_directory() . '/inc/customizer.php';
+
+// Tipo di contenuto "Mezzi" (flotta gestita dall'admin).
+require get_template_directory() . '/inc/post-types.php';
 
 /**
  * Gestione invio form preventivo (admin-ajax), sostituisce mail.php.
