@@ -13,10 +13,20 @@ get_header();
 ?>
 <main>
 	<?php
+	// Le sezioni si attivano/disattivano da Aspetto → Personalizza → Pettenò Tours.
 	get_template_part( 'template-parts/hero' );
-	get_template_part( 'template-parts/services' );
-	get_template_part( 'template-parts/fleet' );
-	get_template_part( 'template-parts/about' );
+	if ( petteno_show( 'show_servizi' ) ) {
+		get_template_part( 'template-parts/services' );
+	}
+	if ( petteno_show( 'show_flotta' ) ) {
+		get_template_part( 'template-parts/fleet' );
+	}
+	if ( petteno_show( 'show_rotte' ) ) {
+		get_template_part( 'template-parts/routes' );
+	}
+	if ( petteno_show( 'show_chi_siamo' ) ) {
+		get_template_part( 'template-parts/about' );
+	}
 	get_template_part( 'template-parts/contact' );
 	?>
 </main>

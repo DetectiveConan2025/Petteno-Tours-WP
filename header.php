@@ -5,12 +5,8 @@
  * @package PettenoTours
  */
 
-$petteno_links = array(
-	'#servizi'   => __( 'Servizi', 'petteno-tours' ),
-	'#flotta'    => __( 'Flotta', 'petteno-tours' ),
-	'#chi-siamo' => __( 'Chi siamo', 'petteno-tours' ),
-	'#contatti'  => __( 'Contatti', 'petteno-tours' ),
-);
+// Voci di menu generate dalle sezioni attive (vedi functions.php).
+$petteno_links = petteno_tours_nav_links();
 ?>
 <!doctype html>
 <html <?php language_attributes(); ?>>

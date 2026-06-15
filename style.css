@@ -728,6 +728,41 @@ p { text-wrap: pretty; }
 }
 
 /* ==========================================================================
+   Rotte scolastiche — sezione attivabile (routes.php)
+   ========================================================================== */
+.routes { background: var(--bg); }
+.routes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+.route-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1.25rem 1.4rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--brand);
+  border-radius: var(--r-lg);
+  transition: border-color 0.3s var(--ease-out),
+              transform 0.4s var(--ease-out),
+              box-shadow 0.3s var(--ease-out);
+}
+.route-card:hover {
+  border-color: var(--line-strong);
+  border-left-color: var(--brand);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+.route-name { font-size: 1.1rem; }
+.route-meta { color: var(--muted); font-size: 0.95rem; }
+
+@media (max-width: 640px) {
+  .routes-grid { grid-template-columns: 1fr; }
+}
+
+/* ==========================================================================
    About — da About.astro
    ========================================================================== */
 .about { background: var(--bg); }

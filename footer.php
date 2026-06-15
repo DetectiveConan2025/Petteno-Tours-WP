@@ -5,8 +5,11 @@
  * @package PettenoTours
  */
 
-$petteno_cols = array(
-	array(
+$petteno_cols = array();
+
+// Colonna Servizi (solo se la sezione è attiva).
+if ( petteno_show( 'show_servizi' ) ) {
+	$petteno_cols[] = array(
 		'title' => __( 'Servizi', 'petteno-tours' ),
 		'links' => array(
 			array( 'label' => 'Gite ed escursioni turistiche', 'href' => '#servizi' ),
@@ -15,15 +18,24 @@ $petteno_cols = array(
 			array( 'label' => 'Eventi e cerimonie', 'href' => '#servizi' ),
 			array( 'label' => 'Tour in Europa', 'href' => '#servizi' ),
 		),
-	),
-	array(
-		'title' => __( 'Azienda', 'petteno-tours' ),
-		'links' => array(
-			array( 'label' => 'Chi siamo', 'href' => '#chi-siamo' ),
-			array( 'label' => 'La flotta', 'href' => '#flotta' ),
-			array( 'label' => 'Contatti', 'href' => '#contatti' ),
-		),
-	),
+	);
+}
+
+// Colonna Azienda: voci coerenti con le sezioni attive.
+$petteno_azienda_links = array();
+if ( petteno_show( 'show_chi_siamo' ) ) {
+	$petteno_azienda_links[] = array( 'label' => 'Chi siamo', 'href' => '#chi-siamo' );
+}
+if ( petteno_show( 'show_flotta' ) ) {
+	$petteno_azienda_links[] = array( 'label' => 'La flotta', 'href' => '#flotta' );
+}
+if ( petteno_show( 'show_rotte' ) ) {
+	$petteno_azienda_links[] = array( 'label' => 'Rotte scolastiche', 'href' => '#rotte' );
+}
+$petteno_azienda_links[] = array( 'label' => 'Contatti', 'href' => '#contatti' );
+$petteno_cols[]          = array(
+	'title' => __( 'Azienda', 'petteno-tours' ),
+	'links' => $petteno_azienda_links,
 );
 ?>
 <footer class="site-footer">

@@ -255,6 +255,21 @@ function petteno_tours_defaults() {
 		'contact_kicker'   => 'Preventivo gratuito',
 		'contact_title'    => 'Raccontaci il viaggio, ti rispondiamo in giornata',
 		'contact_intro'    => 'Quante persone, da dove a dove, in che date. Bastano due righe e ti prepariamo un preventivo chiaro e senza impegno.',
+
+		// --- Interruttori delle sezioni (mostra/nascondi nello scroll) ---
+		'show_servizi'     => true,
+		'show_flotta'      => true,
+		'show_rotte'       => true,
+		'show_chi_siamo'   => true,
+
+		// --- Rotte scolastiche (sezione attivabile/disattivabile) ---
+		'rotte_kicker'     => 'Servizio scolastico',
+		'rotte_title'      => 'Le rotte del trasporto scolastico',
+		'rotte_lead'       => 'Le corse attive per il servizio di trasporto scolastico: linee, fermate e orari. Utile anche per la partecipazione ai bandi.',
+		// Una rotta per riga. Formato: "Nome linea | dettagli/orari" (la parte
+		// dopo la barra "|" è facoltativa). Modificabile dal Customizer.
+		'rotte_list'       => "Linea 1 — Salzano · Robegano · Mirano | Andata 07:10 · Ritorno 13:30\nLinea 2 — Salzano · Cappella · Noale | Andata 07:00 · Ritorno 13:45\nLinea 3 — Salzano · Rivale · Spinea | Andata 07:20 · Ritorno 14:00",
+		'rotte_note'       => 'Orari indicativi: le corse possono variare in base al calendario scolastico e alle esigenze dell’istituto.',
 	);
 }
 
@@ -296,6 +311,41 @@ function petteno_address_full() {
  */
 function petteno_address_short() {
 	return sprintf( '%s, %s (%s)', petteno_opt( 'via' ), petteno_opt( 'citta' ), petteno_opt( 'provincia' ) );
+}
+
+/**
+ * Una sezione è visibile? (interruttori show_* del Customizer).
+ *
+ * @param string $key Chiave dell'interruttore (es. "show_rotte").
+ * @return bool
+ */
+function petteno_show( $key ) {
+	$defaults = petteno_tours_defaults();
+	$default  = isset( $defaults[ $key ] ) ? $defaults[ $key ] : true;
+	return (bool) get_theme_mod( $key, $default );
+}
+
+/**
+ * Voci di navigazione attive, in base alle sezioni visibili.
+ *
+ * @return array Mappa ancora => etichetta.
+ */
+function petteno_tours_nav_links() {
+	$links = array();
+	if ( petteno_show( 'show_servizi' ) ) {
+		$links['#servizi'] = __( 'Servizi', 'petteno-tours' );
+	}
+	if ( petteno_show( 'show_flotta' ) ) {
+		$links['#flotta'] = __( 'Flotta', 'petteno-tours' );
+	}
+	if ( petteno_show( 'show_rotte' ) ) {
+		$links['#rotte'] = __( 'Rotte scolastiche', 'petteno-tours' );
+	}
+	if ( petteno_show( 'show_chi_siamo' ) ) {
+		$links['#chi-siamo'] = __( 'Chi siamo', 'petteno-tours' );
+	}
+	$links['#contatti'] = __( 'Contatti', 'petteno-tours' );
+	return $links;
 }
 
 // Opzioni del Customizer (Aspetto → Personalizza → Pettenò Tours).

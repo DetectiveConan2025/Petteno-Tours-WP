@@ -88,6 +88,44 @@ function petteno_tours_add_image( $wp, $section, $id, $label ) {
 }
 
 /**
+ * Helper: aggiunge un interruttore (checkbox) per mostrare/nascondere.
+ *
+ * @param WP_Customize_Manager $wp      Manager del Customizer.
+ * @param string               $section ID della sezione.
+ * @param string               $id      ID dell'impostazione.
+ * @param string               $label   Etichetta.
+ */
+function petteno_tours_add_checkbox( $wp, $section, $id, $label ) {
+	$defaults = petteno_tours_defaults();
+	$wp->add_setting(
+		$id,
+		array(
+			'default'           => isset( $defaults[ $id ] ) ? $defaults[ $id ] : true,
+			'sanitize_callback' => 'petteno_tours_sanitize_checkbox',
+			'transport'         => 'refresh',
+		)
+	);
+	$wp->add_control(
+		$id,
+		array(
+			'label'   => $label,
+			'section' => $section,
+			'type'    => 'checkbox',
+		)
+	);
+}
+
+/**
+ * Sanitizza un valore checkbox in booleano.
+ *
+ * @param mixed $value Valore grezzo.
+ * @return bool
+ */
+function petteno_tours_sanitize_checkbox( $value ) {
+	return (bool) $value;
+}
+
+/**
  * Registra pannello, sezioni e controlli.
  *
  * @param WP_Customize_Manager $wp Manager del Customizer.
@@ -130,6 +168,7 @@ function petteno_tours_customize_register( $wp ) {
 
 	/* ---- Servizi ------------------------------------------------------- */
 	$wp->add_section( 'petteno_servizi', array( 'title' => __( 'Servizi', 'petteno-tours' ), 'panel' => 'petteno_tours' ) );
+	petteno_tours_add_checkbox( $wp, 'petteno_servizi', 'show_servizi', __( 'Mostra questa sezione nel sito', 'petteno-tours' ) );
 	petteno_tours_add_text( $wp, 'petteno_servizi', 'serv_kicker', __( 'Occhiello', 'petteno-tours' ) );
 	petteno_tours_add_text( $wp, 'petteno_servizi', 'serv_title', __( 'Titolo sezione', 'petteno-tours' ) );
 	petteno_tours_add_text( $wp, 'petteno_servizi', 'serv_lead', __( 'Testo introduttivo', 'petteno-tours' ), 'textarea' );
@@ -142,6 +181,7 @@ function petteno_tours_customize_register( $wp ) {
 
 	/* ---- Flotta -------------------------------------------------------- */
 	$wp->add_section( 'petteno_flotta', array( 'title' => __( 'Flotta', 'petteno-tours' ), 'panel' => 'petteno_tours' ) );
+	petteno_tours_add_checkbox( $wp, 'petteno_flotta', 'show_flotta', __( 'Mostra questa sezione nel sito', 'petteno-tours' ) );
 	petteno_tours_add_text( $wp, 'petteno_flotta', 'fleet_kicker', __( 'Occhiello', 'petteno-tours' ) );
 	petteno_tours_add_text( $wp, 'petteno_flotta', 'fleet_title', __( 'Titolo sezione', 'petteno-tours' ) );
 	petteno_tours_add_text( $wp, 'petteno_flotta', 'fleet_lead', __( 'Testo introduttivo', 'petteno-tours' ), 'textarea' );
@@ -159,8 +199,18 @@ function petteno_tours_customize_register( $wp ) {
 	}
 	petteno_tours_add_text( $wp, 'petteno_flotta', 'fleet_note', __( 'Nota a piè di sezione', 'petteno-tours' ), 'textarea' );
 
+	/* ---- Rotte scolastiche (sezione attivabile/disattivabile) ---------- */
+	$wp->add_section( 'petteno_rotte', array( 'title' => __( 'Rotte scolastiche', 'petteno-tours' ), 'panel' => 'petteno_tours', 'description' => __( 'Sezione dedicata alle corse del trasporto scolastico (utile per i bandi). Disattiva l’interruttore per nasconderla dallo scroll.', 'petteno-tours' ) ) );
+	petteno_tours_add_checkbox( $wp, 'petteno_rotte', 'show_rotte', __( 'Mostra questa sezione nel sito', 'petteno-tours' ) );
+	petteno_tours_add_text( $wp, 'petteno_rotte', 'rotte_kicker', __( 'Occhiello', 'petteno-tours' ) );
+	petteno_tours_add_text( $wp, 'petteno_rotte', 'rotte_title', __( 'Titolo sezione', 'petteno-tours' ) );
+	petteno_tours_add_text( $wp, 'petteno_rotte', 'rotte_lead', __( 'Testo introduttivo', 'petteno-tours' ), 'textarea' );
+	petteno_tours_add_text( $wp, 'petteno_rotte', 'rotte_list', __( 'Elenco rotte — una per riga. Formato: "Nome linea | orari/dettagli" (la parte dopo "|" è facoltativa)', 'petteno-tours' ), 'textarea' );
+	petteno_tours_add_text( $wp, 'petteno_rotte', 'rotte_note', __( 'Nota a piè di sezione', 'petteno-tours' ), 'textarea' );
+
 	/* ---- Chi siamo ----------------------------------------------------- */
 	$wp->add_section( 'petteno_about', array( 'title' => __( 'Chi siamo', 'petteno-tours' ), 'panel' => 'petteno_tours' ) );
+	petteno_tours_add_checkbox( $wp, 'petteno_about', 'show_chi_siamo', __( 'Mostra questa sezione nel sito', 'petteno-tours' ) );
 	petteno_tours_add_text( $wp, 'petteno_about', 'about_kicker', __( 'Occhiello', 'petteno-tours' ) );
 	petteno_tours_add_text( $wp, 'petteno_about', 'about_title', __( 'Titolo', 'petteno-tours' ) );
 	petteno_tours_add_text( $wp, 'petteno_about', 'about_p1', __( 'Paragrafo 1', 'petteno-tours' ), 'textarea' );
