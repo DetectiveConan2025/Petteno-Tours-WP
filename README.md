@@ -89,8 +89,10 @@ I veicoli sono un tipo di contenuto dedicato: menu **Mezzi** nella bacheca.
 - La sezione Flotta li mostra in una **griglia che si adatta** al numero di
   veicoli (1 → 2 → 3 colonne) e l'album si apre a tutto schermo (**lightbox**).
 - L'ordine si imposta con l'attributo «Ordine» della pagina.
-- Finché non crei nessun mezzo, la sezione usa i due veicoli predefiniti del
-  Customizer (così il sito resta valido out-of-the-box).
+- Alla **prima attivazione** del tema vengono creati in automatico i due mezzi
+  predefiniti (Gran Turismo e Scuolabus), con foto e dati già compilati, così
+  la flotta parte popolata e gestibile dal menu **Mezzi**. La creazione avviene
+  una sola volta (non si ripete se poi li modifichi o elimini).
 
 ## Slideshow hero a immagini illimitate
 

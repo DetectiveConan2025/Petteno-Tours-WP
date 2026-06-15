@@ -166,3 +166,100 @@ function petteno_tours_admin_assets( $hook ) {
 	);
 }
 add_action( 'admin_enqueue_scripts', 'petteno_tours_admin_assets' );
+
+/**
+ * Importa un'immagine inclusa nel tema nella libreria media.
+ *
+ * @param string $filename  Nome del file in assets/images/.
+ * @param int    $parent_id Post a cui allegare l'immagine.
+ * @return int ID dell'allegato, 0 in caso di errore.
+ */
+function petteno_tours_import_theme_image( $filename, $parent_id = 0 ) {
+	require_once ABSPATH . 'wp-admin/includes/file.php';
+	require_once ABSPATH . 'wp-admin/includes/media.php';
+	require_once ABSPATH . 'wp-admin/includes/image.php';
+
+	$src = get_template_directory() . '/assets/images/' . $filename;
+	if ( ! file_exists( $src ) ) {
+		return 0;
+	}
+
+	$upload = wp_upload_bits( $filename, null, file_get_contents( $src ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+	if ( ! empty( $upload['error'] ) ) {
+		return 0;
+	}
+
+	$filetype   = wp_check_filetype( $upload['file'], null );
+	$attachment = array(
+		'post_mime_type' => $filetype['type'],
+		'post_title'     => sanitize_file_name( $filename ),
+		'post_content'   => '',
+		'post_status'    => 'inherit',
+	);
+	$att_id = wp_insert_attachment( $attachment, $upload['file'], $parent_id );
+	if ( is_wp_error( $att_id ) || ! $att_id ) {
+		return 0;
+	}
+	$meta = wp_generate_attachment_metadata( $att_id, $upload['file'] );
+	wp_update_attachment_metadata( $att_id, $meta );
+
+	return $att_id;
+}
+
+/**
+ * Crea i due mezzi predefiniti (Gran Turismo, Scuolabus) alla prima
+ * attivazione del tema, così la Flotta parte già popolata e gestibile dal
+ * menu "Mezzi". Eseguito una sola volta e solo se non ci sono già mezzi.
+ */
+function petteno_tours_seed_mezzi() {
+	if ( get_option( 'petteno_tours_seeded' ) ) {
+		return;
+	}
+
+	$existing = get_posts(
+		array(
+			'post_type'      => 'petteno_mezzo',
+			'post_status'    => 'any',
+			'posts_per_page' => 1,
+			'fields'         => 'ids',
+			'no_found_rows'  => true,
+		)
+	);
+	if ( ! empty( $existing ) ) {
+		update_option( 'petteno_tours_seeded', 1 );
+		return;
+	}
+
+	$defaults = petteno_tours_defaults();
+	$seed     = array(
+		array( 'n' => 1, 'image' => 'hero-1.jpg' ),
+		array( 'n' => 2, 'image' => 'hero-3.jpg' ),
+	);
+
+	foreach ( $seed as $order => $item ) {
+		$n       = $item['n'];
+		$post_id = wp_insert_post(
+			array(
+				'post_type'   => 'petteno_mezzo',
+				'post_status' => 'publish',
+				'post_title'  => $defaults[ "fleet_{$n}_name" ],
+				'menu_order'  => $order,
+			)
+		);
+		if ( is_wp_error( $post_id ) || ! $post_id ) {
+			continue;
+		}
+
+		update_post_meta( $post_id, '_petteno_posti', $defaults[ "fleet_{$n}_seats" ] );
+		update_post_meta( $post_id, '_petteno_desc', $defaults[ "fleet_{$n}_desc" ] );
+		update_post_meta( $post_id, '_petteno_dotazioni', $defaults[ "fleet_{$n}_specs" ] );
+
+		$att_id = petteno_tours_import_theme_image( $item['image'], $post_id );
+		if ( $att_id ) {
+			set_post_thumbnail( $post_id, $att_id );
+		}
+	}
+
+	update_option( 'petteno_tours_seeded', 1 );
+}
+add_action( 'after_switch_theme', 'petteno_tours_seed_mezzi' );
