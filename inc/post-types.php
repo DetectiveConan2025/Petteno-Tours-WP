@@ -210,9 +210,16 @@ function petteno_tours_import_theme_image( $filename, $parent_id = 0 ) {
  * Crea i due mezzi predefiniti (Gran Turismo, Scuolabus) alla prima
  * attivazione del tema, così la Flotta parte già popolata e gestibile dal
  * menu "Mezzi". Eseguito una sola volta e solo se non ci sono già mezzi.
+ *
+ * Agganciato sia all'attivazione del tema sia al caricamento della bacheca:
+ * se si sovrascrivono i file del tema già attivo (senza un vero "switch"),
+ * l'evento di attivazione non scatta, quindi serve anche admin_init.
  */
 function petteno_tours_seed_mezzi() {
-	if ( get_option( 'petteno_tours_seeded' ) ) {
+	if ( ! is_admin() ) {
+		return;
+	}
+	if ( get_option( 'petteno_tours_seeded_v2' ) ) {
 		return;
 	}
 
@@ -226,7 +233,7 @@ function petteno_tours_seed_mezzi() {
 		)
 	);
 	if ( ! empty( $existing ) ) {
-		update_option( 'petteno_tours_seeded', 1 );
+		update_option( 'petteno_tours_seeded_v2', 1 );
 		return;
 	}
 
@@ -260,6 +267,7 @@ function petteno_tours_seed_mezzi() {
 		}
 	}
 
-	update_option( 'petteno_tours_seeded', 1 );
+	update_option( 'petteno_tours_seeded_v2', 1 );
 }
 add_action( 'after_switch_theme', 'petteno_tours_seed_mezzi' );
+add_action( 'admin_init', 'petteno_tours_seed_mezzi' );
