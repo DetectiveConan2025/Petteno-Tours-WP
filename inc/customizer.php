@@ -255,13 +255,14 @@ function petteno_tours_customize_register( $wp ) {
 	petteno_tours_add_text( $wp, 'petteno_flotta', 'fleet_note', __( 'Nota a piè di sezione', 'petteno-tours' ), 'textarea' );
 
 	/* ---- Rotte scolastiche (sezione attivabile/disattivabile) ---------- */
-	$wp->add_section( 'petteno_rotte', array( 'title' => __( 'Rotte scolastiche', 'petteno-tours' ), 'panel' => 'petteno_tours', 'description' => __( 'Sezione dedicata alle corse del trasporto scolastico (utile per i bandi). Disattiva l’interruttore per nasconderla dallo scroll.', 'petteno-tours' ) ) );
+	$wp->add_section( 'petteno_rotte', array( 'title' => __( 'Rotte scolastiche', 'petteno-tours' ), 'panel' => 'petteno_tours', 'description' => __( 'La tabella completa vive in una pagina dedicata (creata automaticamente, linkabile a sé stante per i bandi); qui in home resta solo un richiamo. Disattiva l’interruttore per nasconderlo dallo scroll.', 'petteno-tours' ) ) );
 	petteno_tours_add_checkbox( $wp, 'petteno_rotte', 'show_rotte', __( 'Mostra questa sezione nel sito', 'petteno-tours' ) );
 	petteno_tours_add_text( $wp, 'petteno_rotte', 'rotte_kicker', __( 'Occhiello', 'petteno-tours' ) );
 	petteno_tours_add_text( $wp, 'petteno_rotte', 'rotte_title', __( 'Titolo sezione', 'petteno-tours' ) );
 	petteno_tours_add_text( $wp, 'petteno_rotte', 'rotte_lead', __( 'Testo introduttivo', 'petteno-tours' ), 'textarea' );
 	petteno_tours_add_text( $wp, 'petteno_rotte', 'rotte_list', __( 'Elenco rotte — una per riga. Formato: "Nome linea | orari/dettagli" (la parte dopo "|" è facoltativa)', 'petteno-tours' ), 'textarea' );
 	petteno_tours_add_text( $wp, 'petteno_rotte', 'rotte_note', __( 'Nota a piè di sezione', 'petteno-tours' ), 'textarea' );
+	petteno_tours_add_text( $wp, 'petteno_rotte', 'rotte_cta', __( 'Bottone del richiamo in home (testo)', 'petteno-tours' ) );
 
 	/* ---- Chi siamo ----------------------------------------------------- */
 	$wp->add_section( 'petteno_about', array( 'title' => __( 'Chi siamo', 'petteno-tours' ), 'panel' => 'petteno_tours' ) );
@@ -281,5 +282,18 @@ function petteno_tours_customize_register( $wp ) {
 	petteno_tours_add_text( $wp, 'petteno_contatti_head', 'contact_kicker', __( 'Occhiello', 'petteno-tours' ) );
 	petteno_tours_add_text( $wp, 'petteno_contatti_head', 'contact_title', __( 'Titolo', 'petteno-tours' ) );
 	petteno_tours_add_text( $wp, 'petteno_contatti_head', 'contact_intro', __( 'Testo introduttivo', 'petteno-tours' ), 'textarea' );
+
+	/* ---- Banner CTA finale (prima del footer) -------------------------- */
+	$wp->add_section(
+		'petteno_ctaband',
+		array(
+			'title'       => __( 'Banner CTA finale', 'petteno-tours' ),
+			'panel'       => 'petteno_tours',
+			'description' => __( 'Fascia che chiude la pagina prima del footer, con un richiamo al modulo di contatto qui sopra.', 'petteno-tours' ),
+		)
+	);
+	petteno_tours_add_text( $wp, 'petteno_ctaband', 'ctaband_kicker', __( 'Occhiello', 'petteno-tours' ) );
+	petteno_tours_add_text( $wp, 'petteno_ctaband', 'ctaband_title', __( 'Titolo', 'petteno-tours' ) );
+	petteno_tours_add_text( $wp, 'petteno_ctaband', 'ctaband_button', __( 'Testo del bottone', 'petteno-tours' ) );
 }
 add_action( 'customize_register', 'petteno_tours_customize_register' );

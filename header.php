@@ -19,11 +19,11 @@ $petteno_links = petteno_tours_nav_links();
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
 
-<a href="#servizi" class="sr-only"><?php esc_html_e( 'Vai al contenuto principale', 'petteno-tours' ); ?></a>
+<a href="#main" class="sr-only"><?php esc_html_e( 'Vai al contenuto principale', 'petteno-tours' ); ?></a>
 
 <header class="site-header">
 	<div class="wrap header-inner">
-		<a href="#top" class="brand" aria-label="<?php esc_attr_e( 'Pettenò Tours — home', 'petteno-tours' ); ?>">
+		<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="brand" aria-label="<?php esc_attr_e( 'Pettenò Tours — home', 'petteno-tours' ); ?>">
 			<?php if ( has_custom_logo() ) : ?>
 				<?php the_custom_logo(); ?>
 			<?php else : ?>
@@ -46,17 +46,19 @@ $petteno_links = petteno_tours_nav_links();
 			<?php endforeach; ?>
 		</nav>
 
-		<a href="#contatti" class="btn btn-primary header-cta"><?php esc_html_e( 'Richiedi preventivo', 'petteno-tours' ); ?></a>
+		<div class="header-actions">
+			<a href="<?php echo esc_url( petteno_tours_contact_url() ); ?>" class="btn btn-primary header-cta"><?php esc_html_e( 'Richiedi preventivo', 'petteno-tours' ); ?></a>
 
-		<button class="nav-toggle" aria-expanded="false" aria-controls="mobile-nav" aria-label="<?php esc_attr_e( 'Apri menù', 'petteno-tours' ); ?>">
-			<span></span><span></span><span></span>
-		</button>
+			<button class="nav-toggle" aria-expanded="false" aria-controls="mobile-nav" aria-label="<?php esc_attr_e( 'Apri menù', 'petteno-tours' ); ?>">
+				<span></span><span></span><span></span>
+			</button>
+		</div>
 	</div>
 
 	<nav id="mobile-nav" class="mobile-nav" aria-label="<?php esc_attr_e( 'Navigazione mobile', 'petteno-tours' ); ?>" hidden>
 		<?php foreach ( $petteno_links as $href => $label ) : ?>
 			<a href="<?php echo esc_url( $href ); ?>" class="mobile-link"><?php echo esc_html( $label ); ?></a>
 		<?php endforeach; ?>
-		<a href="#contatti" class="btn btn-primary mobile-cta"><?php esc_html_e( 'Richiedi preventivo', 'petteno-tours' ); ?></a>
+		<a href="<?php echo esc_url( petteno_tours_contact_url() ); ?>" class="btn btn-primary mobile-cta"><?php esc_html_e( 'Richiedi preventivo', 'petteno-tours' ); ?></a>
 	</nav>
 </header>

@@ -7,7 +7,7 @@
 
 get_header();
 ?>
-<main>
+<main id="main">
 	<?php
 	// Le sezioni si attivano/disattivano da Aspetto → Personalizza → Pettenò Tours.
 	get_template_part( 'template-parts/hero' );
@@ -18,12 +18,14 @@ get_header();
 		get_template_part( 'template-parts/fleet' );
 	}
 	if ( petteno_show( 'show_rotte' ) ) {
-		get_template_part( 'template-parts/routes' );
+		get_template_part( 'template-parts/routes-teaser' );
 	}
 	if ( petteno_show( 'show_chi_siamo' ) ) {
 		get_template_part( 'template-parts/about' );
 	}
-	get_template_part( 'template-parts/contact' );
+	// Il modulo di preventivo vive nella pagina dedicata "Contatti"
+	// (template-contatto.php): qui resta solo il banner che vi rimanda.
+	get_template_part( 'template-parts/cta-band' );
 	?>
 </main>
 <?php

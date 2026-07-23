@@ -52,7 +52,7 @@ $petteno_svg_allowed = array(
 					</span>
 					<h3><?php echo esc_html( $service['title'] ); ?></h3>
 					<p><?php echo esc_html( $service['desc'] ); ?></p>
-					<a href="#contatti" class="tile-link">Richiedi info
+					<a href="<?php echo esc_url( petteno_tours_contact_url() ); ?>" class="tile-link">Richiedi info
 						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
 					</a>
 				</article>

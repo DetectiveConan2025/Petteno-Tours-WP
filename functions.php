@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'PETTENO_TOURS_VERSION' ) ) {
-	define( 'PETTENO_TOURS_VERSION', '1.0.0' );
+	define( 'PETTENO_TOURS_VERSION', '1.5.1' );
 }
 
 /**
@@ -93,6 +93,7 @@ function petteno_tours_assets() {
 			'nonce'   => wp_create_nonce( 'petteno_tours_preventivo' ),
 			'action'  => 'petteno_tours_preventivo',
 			'email'   => petteno_opt( 'email' ),
+			'homeUrl' => home_url( '/' ),
 		)
 	);
 }
@@ -257,6 +258,11 @@ function petteno_tours_defaults() {
 		'contact_title'    => 'Raccontaci il viaggio, ti rispondiamo in giornata',
 		'contact_intro'    => 'Quante persone, da dove a dove, in che date. Bastano due righe e ti prepariamo un preventivo chiaro e senza impegno.',
 
+		// --- Banner CTA finale (prima del footer, rimanda al modulo contatti) ---
+		'ctaband_kicker'   => 'Preventivo gratuito',
+		'ctaband_title'    => 'Raccontaci il viaggio, ti rispondiamo in giornata.',
+		'ctaband_button'   => 'Vai al modulo di contatto',
+
 		// --- Interruttori delle sezioni (mostra/nascondi nello scroll) ---
 		'show_servizi'     => true,
 		'show_flotta'      => true,
@@ -267,6 +273,7 @@ function petteno_tours_defaults() {
 		'rotte_kicker'     => 'Servizio scolastico',
 		'rotte_title'      => 'Le rotte del trasporto scolastico',
 		'rotte_lead'       => 'Le corse attive per il servizio di trasporto scolastico: linee, fermate e orari. Utile anche per la partecipazione ai bandi.',
+		'rotte_cta'        => 'Vedi tutti gli orari',
 		// Una rotta per riga. Formato: "Nome linea | dettagli/orari" (la parte
 		// dopo la barra "|" è facoltativa). Modificabile dal Customizer.
 		'rotte_list'       => "Linea 1 — Salzano · Robegano · Mirano | Andata 07:10 · Ritorno 13:30\nLinea 2 — Salzano · Cappella · Noale | Andata 07:00 · Ritorno 13:45\nLinea 3 — Salzano · Rivale · Spinea | Andata 07:20 · Ritorno 14:00",
@@ -327,25 +334,109 @@ function petteno_show( $key ) {
 }
 
 /**
+ * Ancora assoluta alla home ("https://sito/#servizi"): a differenza di un
+ * semplice "#servizi", funziona anche da pagine diverse dalla home (es. la
+ * pagina Contatti dedicata), riportando l'utente alla home e poi scorrendo
+ * alla sezione.
+ *
+ * @param string $hash Es. "#servizi".
+ * @return string
+ */
+function petteno_tours_anchor( $hash ) {
+	return home_url( '/' . $hash );
+}
+
+/**
+ * URL della pagina dedicata al modulo di contatto (creata automaticamente
+ * all'attivazione del tema, vedi petteno_tours_seed_contact_page()).
+ * In quel brevissimo intervallo prima che la pagina venga creata (o se per
+ * qualche motivo non lo fosse), il fallback è semplicemente la home.
+ *
+ * @return string
+ */
+function petteno_tours_contact_url() {
+	$id = (int) get_option( 'petteno_tours_contact_page_id' );
+	if ( $id && 'publish' === get_post_status( $id ) ) {
+		$url = get_permalink( $id );
+		if ( $url ) {
+			return $url;
+		}
+	}
+
+	$pages = get_posts(
+		array(
+			'post_type'      => 'page',
+			'post_status'    => 'publish',
+			'meta_key'       => '_wp_page_template',
+			'meta_value'     => 'template-contatto.php',
+			'posts_per_page' => 1,
+			'fields'         => 'ids',
+			'no_found_rows'  => true,
+		)
+	);
+	if ( $pages ) {
+		return get_permalink( $pages[0] );
+	}
+
+	return home_url( '/' );
+}
+
+/**
+ * URL della pagina dedicata alle rotte scolastiche (creata automaticamente
+ * all'attivazione del tema, vedi petteno_tours_seed_routes_page()). Utile
+ * per essere linkata a sé stante (es. documentazione per bandi comunali).
+ * Fallback alla home se, per qualsiasi motivo, la pagina non risultasse
+ * ancora creata.
+ *
+ * @return string
+ */
+function petteno_tours_routes_url() {
+	$id = (int) get_option( 'petteno_tours_routes_page_id' );
+	if ( $id && 'publish' === get_post_status( $id ) ) {
+		$url = get_permalink( $id );
+		if ( $url ) {
+			return $url;
+		}
+	}
+
+	$pages = get_posts(
+		array(
+			'post_type'      => 'page',
+			'post_status'    => 'publish',
+			'meta_key'       => '_wp_page_template',
+			'meta_value'     => 'template-rotte.php',
+			'posts_per_page' => 1,
+			'fields'         => 'ids',
+			'no_found_rows'  => true,
+		)
+	);
+	if ( $pages ) {
+		return get_permalink( $pages[0] );
+	}
+
+	return home_url( '/' );
+}
+
+/**
  * Voci di navigazione attive, in base alle sezioni visibili.
  *
- * @return array Mappa ancora => etichetta.
+ * @return array Mappa href => etichetta.
  */
 function petteno_tours_nav_links() {
 	$links = array();
 	if ( petteno_show( 'show_servizi' ) ) {
-		$links['#servizi'] = __( 'Servizi', 'petteno-tours' );
+		$links[ petteno_tours_anchor( '#servizi' ) ] = __( 'Servizi', 'petteno-tours' );
 	}
 	if ( petteno_show( 'show_flotta' ) ) {
-		$links['#flotta'] = __( 'Flotta', 'petteno-tours' );
+		$links[ petteno_tours_anchor( '#flotta' ) ] = __( 'Flotta', 'petteno-tours' );
 	}
 	if ( petteno_show( 'show_rotte' ) ) {
-		$links['#rotte'] = __( 'Rotte scolastiche', 'petteno-tours' );
+		$links[ petteno_tours_routes_url() ] = __( 'Rotte scolastiche', 'petteno-tours' );
 	}
 	if ( petteno_show( 'show_chi_siamo' ) ) {
-		$links['#chi-siamo'] = __( 'Chi siamo', 'petteno-tours' );
+		$links[ petteno_tours_anchor( '#chi-siamo' ) ] = __( 'Chi siamo', 'petteno-tours' );
 	}
-	$links['#contatti'] = __( 'Contatti', 'petteno-tours' );
+	$links[ petteno_tours_contact_url() ] = __( 'Contatti', 'petteno-tours' );
 	return $links;
 }
 

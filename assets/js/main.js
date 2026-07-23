@@ -14,11 +14,24 @@
   document.body.classList.add("js");
 
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var pointerFine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
   var all = document.querySelectorAll(".reveal");
   var revealAll = function () {
     all.forEach(function (el) {
       el.classList.add("is-in");
     });
+  };
+
+  // Cascata: ritardo crescente in base alla posizione fra i ".reveal"
+  // fratelli nello stesso contenitore (es. le schede di una griglia).
+  var staggerDelay = function (el) {
+    var parent = el.parentElement;
+    if (!parent) return 0;
+    var siblings = Array.prototype.filter.call(parent.children, function (c) {
+      return c.classList && c.classList.contains("reveal");
+    });
+    var idx = siblings.indexOf(el);
+    return Math.min(idx < 0 ? 0 : idx, 5) * 70;
   };
 
   if (reduce || !("IntersectionObserver" in window)) {
@@ -28,6 +41,7 @@
       function (entries) {
         entries.forEach(function (e) {
           if (e.isIntersecting) {
+            e.target.style.transitionDelay = staggerDelay(e.target) + "ms";
             e.target.classList.add("is-in");
             io.unobserve(e.target);
           }
@@ -179,6 +193,79 @@
     });
   })();
 
+  /* ---- Navbar compatta allo scroll -------------------------------------- */
+  (function () {
+    var header = document.querySelector(".site-header");
+    if (!header) return;
+    var ticking = false;
+    var update = function () {
+      header.classList.toggle("is-scrolled", window.scrollY > 40);
+      ticking = false;
+    };
+    window.addEventListener(
+      "scroll",
+      function () {
+        if (!ticking) {
+          window.requestAnimationFrame(update);
+          ticking = true;
+        }
+      },
+      { passive: true }
+    );
+    update();
+  })();
+
+  /* ---- Magnetic hover sui CTA principali -------------------------------- */
+  if (pointerFine && !reduce) {
+    (function () {
+      var buttons = document.querySelectorAll(".btn-primary, .btn-white");
+      var strength = 0.25;
+      var maxOffset = 6;
+      buttons.forEach(function (btn) {
+        btn.addEventListener("mousemove", function (e) {
+          var rect = btn.getBoundingClientRect();
+          var dx = e.clientX - (rect.left + rect.width / 2);
+          var dy = e.clientY - (rect.top + rect.height / 2);
+          var ox = Math.max(-maxOffset, Math.min(maxOffset, dx * strength));
+          var oy = Math.max(-maxOffset, Math.min(maxOffset, dy * strength));
+          btn.style.transform = "translate(" + ox + "px, " + oy + "px)";
+        });
+        btn.addEventListener("mouseleave", function () {
+          btn.style.transform = "";
+        });
+      });
+    })();
+  }
+
+  /* ---- Parallax leggero sullo sfondo dell'hero -------------------------- */
+  if (!reduce && window.innerWidth > 760) {
+    (function () {
+      var slides = document.querySelector(".slides");
+      var hero = document.querySelector(".hero");
+      if (!slides || !hero) return;
+      var ticking = false;
+      var update = function () {
+        var rect = hero.getBoundingClientRect();
+        // Attivo solo mentre l'hero è (almeno in parte) in vista.
+        if (rect.bottom > 0 && rect.top < window.innerHeight) {
+          var offset = Math.max(0, -rect.top) * 0.15;
+          slides.style.transform = "translateY(" + Math.min(offset, 80) + "px)";
+        }
+        ticking = false;
+      };
+      window.addEventListener(
+        "scroll",
+        function () {
+          if (!ticking) {
+            window.requestAnimationFrame(update);
+            ticking = true;
+          }
+        },
+        { passive: true }
+      );
+    })();
+  }
+
   /* ---- Anno del footer ------------------------------------------------- */
   var yearEl = document.getElementById("footer-year");
   if (yearEl) yearEl.textContent = new Date().getFullYear();
@@ -218,19 +305,25 @@
         })
         .then(function (json) {
           if (json && json.ok) {
-            hint.textContent = "Messaggio inviato! Ti risponderemo al più presto.";
+            // Invio riuscito: messaggio dinamico, poi si torna alla home
+            // (il modulo resta disabilitato, non serve più riattivarlo).
+            hint.textContent =
+              "Messaggio inviato! Ti risponderemo al più presto. Torno alla home…";
             form.reset();
+            setTimeout(function () {
+              window.location.href = cfg.homeUrl || "/";
+            }, 2200);
           } else {
             throw new Error("send failed");
           }
         })
         .catch(function () {
+          // Invio fallito: avviso dinamico sulla pagina stessa, il modulo
+          // resta compilabile per riprovare (nessun redirect).
           hint.classList.add("error");
           hint.textContent =
             "Errore nell'invio. Scrivici direttamente a " +
             (cfg.email || "pettenotours@gmail.com");
-        })
-        .then(function () {
           btn.disabled = false;
           btn.textContent = "Invia richiesta";
         });

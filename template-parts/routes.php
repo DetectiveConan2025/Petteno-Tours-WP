@@ -34,15 +34,23 @@ foreach ( $petteno_lines as $line ) {
 		</div>
 
 		<?php if ( $petteno_routes ) : ?>
-			<div class="routes-grid">
-				<?php foreach ( $petteno_routes as $route ) : ?>
-					<article class="route-card reveal">
-						<h3 class="route-name"><?php echo esc_html( $route['name'] ); ?></h3>
-						<?php if ( '' !== $route['meta'] ) : ?>
-							<p class="route-meta"><?php echo esc_html( $route['meta'] ); ?></p>
-						<?php endif; ?>
-					</article>
-				<?php endforeach; ?>
+			<div class="routes-table-wrap reveal">
+				<table class="routes-table">
+					<thead>
+						<tr>
+							<th scope="col"><?php esc_html_e( 'Linea', 'petteno-tours' ); ?></th>
+							<th scope="col"><?php esc_html_e( 'Orari', 'petteno-tours' ); ?></th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php foreach ( $petteno_routes as $route ) : ?>
+							<tr>
+								<th scope="row" class="route-name"><?php echo esc_html( $route['name'] ); ?></th>
+								<td class="route-meta"><?php echo '' !== $route['meta'] ? esc_html( $route['meta'] ) : '—'; ?></td>
+							</tr>
+						<?php endforeach; ?>
+					</tbody>
+				</table>
 			</div>
 		<?php endif; ?>
 

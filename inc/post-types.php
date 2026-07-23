@@ -271,3 +271,108 @@ function petteno_tours_seed_mezzi() {
 }
 add_action( 'after_switch_theme', 'petteno_tours_seed_mezzi' );
 add_action( 'admin_init', 'petteno_tours_seed_mezzi' );
+
+/**
+ * Crea la pagina "Contatti" (modulo di preventivo) alla prima attivazione
+ * del tema, assegnandole il template dedicato. L'header, il banner CTA e il
+ * footer puntano tutti a questa pagina invece che a un'ancora nella home.
+ *
+ * Stesso pattern di petteno_tours_seed_mezzi(): agganciata sia
+ * all'attivazione sia ad admin_init, per coprire anche il caso di un
+ * ricaricamento dei file del tema senza un vero "switch".
+ */
+function petteno_tours_seed_contact_page() {
+	if ( ! is_admin() ) {
+		return;
+	}
+
+	$existing_id = (int) get_option( 'petteno_tours_contact_page_id' );
+	if ( $existing_id && get_post( $existing_id ) ) {
+		return;
+	}
+
+	// Nel caso esista già una pagina con questo template (es. rigenerata
+	// manualmente), la riusiamo invece di crearne una seconda.
+	$found = get_posts(
+		array(
+			'post_type'      => 'page',
+			'post_status'    => 'any',
+			'meta_key'       => '_wp_page_template',
+			'meta_value'     => 'template-contatto.php',
+			'posts_per_page' => 1,
+			'fields'         => 'ids',
+			'no_found_rows'  => true,
+		)
+	);
+	if ( $found ) {
+		update_option( 'petteno_tours_contact_page_id', $found[0] );
+		return;
+	}
+
+	$post_id = wp_insert_post(
+		array(
+			'post_type'    => 'page',
+			'post_status'  => 'publish',
+			'post_title'   => __( 'Contatti', 'petteno-tours' ),
+			'post_name'    => 'contatti',
+			'page_template' => 'template-contatto.php',
+		)
+	);
+	if ( is_wp_error( $post_id ) || ! $post_id ) {
+		return;
+	}
+
+	update_option( 'petteno_tours_contact_page_id', $post_id );
+}
+add_action( 'after_switch_theme', 'petteno_tours_seed_contact_page' );
+add_action( 'admin_init', 'petteno_tours_seed_contact_page' );
+
+/**
+ * Crea la pagina "Rotte scolastiche" alla prima attivazione del tema,
+ * assegnandole il template dedicato: utile per essere linkata a sé stante
+ * (es. documentazione per bandi comunali). Stesso pattern delle altre
+ * funzioni "seed_*" di questo file.
+ */
+function petteno_tours_seed_routes_page() {
+	if ( ! is_admin() ) {
+		return;
+	}
+
+	$existing_id = (int) get_option( 'petteno_tours_routes_page_id' );
+	if ( $existing_id && get_post( $existing_id ) ) {
+		return;
+	}
+
+	$found = get_posts(
+		array(
+			'post_type'      => 'page',
+			'post_status'    => 'any',
+			'meta_key'       => '_wp_page_template',
+			'meta_value'     => 'template-rotte.php',
+			'posts_per_page' => 1,
+			'fields'         => 'ids',
+			'no_found_rows'  => true,
+		)
+	);
+	if ( $found ) {
+		update_option( 'petteno_tours_routes_page_id', $found[0] );
+		return;
+	}
+
+	$post_id = wp_insert_post(
+		array(
+			'post_type'     => 'page',
+			'post_status'   => 'publish',
+			'post_title'    => __( 'Rotte scolastiche', 'petteno-tours' ),
+			'post_name'     => 'rotte-scolastiche',
+			'page_template' => 'template-rotte.php',
+		)
+	);
+	if ( is_wp_error( $post_id ) || ! $post_id ) {
+		return;
+	}
+
+	update_option( 'petteno_tours_routes_page_id', $post_id );
+}
+add_action( 'after_switch_theme', 'petteno_tours_seed_routes_page' );
+add_action( 'admin_init', 'petteno_tours_seed_routes_page' );

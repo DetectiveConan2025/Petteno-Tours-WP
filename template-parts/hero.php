@@ -53,14 +53,14 @@ if ( ! $petteno_slides ) {
 			</h1>
 			<p class="lead"><?php echo esc_html( petteno_opt( 'hero_lead' ) ); ?></p>
 			<div class="hero-actions">
-				<a href="#contatti" class="btn btn-white"><?php echo esc_html( petteno_opt( 'hero_cta1' ) ); ?></a>
-				<a href="#flotta" class="btn btn-ghost-white"><?php echo esc_html( petteno_opt( 'hero_cta2' ) ); ?></a>
+				<a href="<?php echo esc_url( petteno_tours_contact_url() ); ?>" class="btn btn-white"><?php echo esc_html( petteno_opt( 'hero_cta1' ) ); ?></a>
+				<a href="<?php echo esc_url( petteno_tours_anchor( '#flotta' ) ); ?>" class="btn btn-ghost-white"><?php echo esc_html( petteno_opt( 'hero_cta2' ) ); ?></a>
 			</div>
 		</div>
 	</div>
 
 	<!-- Freccia "scorri giù" -->
-	<a href="#servizi" class="scroll-down" aria-label="Scorri alla sezione Servizi">
+	<a href="<?php echo esc_url( petteno_tours_anchor( '#servizi' ) ); ?>" class="scroll-down" aria-label="Scorri alla sezione Servizi">
 		<svg width="30" height="30" viewBox="0 0 24 24" fill="none"
 			stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
 			<polyline points="6 9 12 15 18 9" />

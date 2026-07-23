@@ -24,7 +24,7 @@ $petteno_values = array(
 			<h2><?php echo esc_html( petteno_opt( 'about_title' ) ); ?></h2>
 			<p><?php echo esc_html( petteno_opt( 'about_p1' ) ); ?></p>
 			<p><?php echo esc_html( petteno_opt( 'about_p2' ) ); ?></p>
-			<a href="#contatti" class="btn btn-primary"><?php echo esc_html( petteno_opt( 'about_cta' ) ); ?></a>
+			<a href="<?php echo esc_url( petteno_tours_contact_url() ); ?>" class="btn btn-primary"><?php echo esc_html( petteno_opt( 'about_cta' ) ); ?></a>
 		</div>
 
 		<ul class="values reveal">
