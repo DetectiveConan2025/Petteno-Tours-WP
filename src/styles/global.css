@@ -49,8 +49,8 @@
   --s-8: 7rem;
 
   /* --- Tipografia --- */
-  --font-display: "Bricolage Grotesque", "Albert Sans", system-ui, sans-serif;
-  --font-body: "Albert Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Bricolage Grotesque Variable", "Albert Sans Variable", system-ui, sans-serif;
+  --font-body: "Albert Sans Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
 
   /* --- Ombre (discrete, mai ghost-card) --- */
   --shadow-sm: 0 1px 2px oklch(40% 0.06 250 / 0.06);
@@ -1311,3 +1311,23 @@ a.ccard-value:hover { color: var(--brand-bright); text-decoration: underline; }
 /* Pagina 404 */
 .notfound { min-height: 60vh; display: grid; place-items: center; text-align: center; }
 .notfound .lead { margin: 1rem auto 2rem; }
+
+/* Nota privacy sotto il modulo */
+.form-privacy { font-size: 0.82rem; line-height: 1.5; color: var(--muted); margin-top: 0.5rem; }
+.form-privacy a { color: var(--brand-ink); text-decoration: underline; text-underline-offset: 2px; }
+
+/* Link legali nel footer */
+.footer-legal { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+.footer-legal a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.footer-legal a:hover { color: #fff; }
+
+/* Pagine Privacy / Cookie */
+.legal-wrap { max-width: 760px; }
+.legal-date { color: var(--muted); font-size: 0.9rem; margin: 0.75rem 0 2rem; }
+.legal-body { color: var(--ink-soft); line-height: 1.7; overflow-wrap: anywhere; }
+.legal-body h2 { font-size: clamp(1.3rem, 1.1rem + 0.8vw, 1.65rem); letter-spacing: -0.01em; margin: 2.2rem 0 0.7rem; color: var(--ink); }
+.legal-body p, .legal-body ul { margin: 0 0 1rem; }
+.legal-body ul { padding-left: 1.2rem; }
+.legal-body li { margin-bottom: 0.45rem; }
+.legal-body a { color: var(--brand-ink); text-decoration: underline; text-underline-offset: 2px; }
+.legal-body strong { color: var(--ink); }

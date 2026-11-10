@@ -53,6 +53,7 @@ export default config({
       Azienda: ['azienda'],
       'Home page': ['hero', 'servizi', 'flotta', 'mezzi', 'chiSiamo', 'ctaBand'],
       'Altre pagine': ['rotte', 'contatti'],
+      'Privacy e cookie': ['privacy', 'cookie'],
     },
   },
 
@@ -238,6 +239,26 @@ export default config({
         kicker: text('Occhiello'),
         titolo: text('Titolo'),
         bottone: text('Testo del bottone'),
+      },
+    }),
+
+    /* ---- Pagine legali (testo libero con titoli, elenchi, link) -------- */
+    privacy: singleton({
+      label: 'Privacy policy',
+      path: 'src/content/legale/privacy',
+      format: { contentField: 'testo' },
+      schema: {
+        aggiornamento: fields.date({ label: 'Ultimo aggiornamento', validation: { isRequired: true } }),
+        testo: fields.markdoc({ label: 'Testo', extension: 'mdoc' }),
+      },
+    }),
+    cookie: singleton({
+      label: 'Cookie policy',
+      path: 'src/content/legale/cookie',
+      format: { contentField: 'testo' },
+      schema: {
+        aggiornamento: fields.date({ label: 'Ultimo aggiornamento', validation: { isRequired: true } }),
+        testo: fields.markdoc({ label: 'Testo', extension: 'mdoc' }),
       },
     }),
   },

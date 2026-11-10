@@ -1,0 +1,34 @@
+---
+/**
+ * Pagina legale (Privacy / Cookie): testo gestito dal pannello in Markdoc,
+ * convertito in HTML al momento della build.
+ */
+import Markdoc from '@markdoc/markdoc';
+import { reader } from '../lib/site';
+
+interface Props {
+  which: 'privacy' | 'cookie';
+  title: string;
+}
+const { which, title } = Astro.props;
+
+const entry = await reader.singletons[which].read({ resolveLinkedFiles: true });
+if (!entry) throw new Error(`Contenuto mancante: src/content/legale/${which}.mdoc`);
+
+// Gli "a capo" scritti nel pannello restano a capo anche nella pagina.
+const markdocConfig = {
+  nodes: { softbreak: { transform: () => new Markdoc.Tag('br') } },
+};
+const html = Markdoc.renderers.html(Markdoc.transform(entry.testo.node, markdocConfig));
+const data = entry.aggiornamento
+  ? new Date(entry.aggiornamento).toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' })
+  : null;
+---
+<section class="section legal">
+  <div class="wrap legal-wrap">
+    <span class="kicker">Informazioni legali</span>
+    <h1 class="h2">{title}</h1>
+    {data && <p class="legal-date">Ultimo aggiornamento: {data}</p>}
+    <div class="legal-body" set:html={html} />
+  </div>
+</section>

@@ -50,6 +50,10 @@ const year = new Date().getFullYear();
 
   <div class="wrap footer-bottom">
     <p>© <span id="footer-year">{year}</span> {a.ragioneSociale} — P.IVA {a.piva}</p>
-    <p>{addressFull(a)}</p>
+    <p class="footer-legal">
+      <a href="/privacy/">Privacy policy</a>
+      <span aria-hidden="true">·</span>
+      <a href="/cookie/">Cookie policy</a>
+    </p>
   </div>
 </footer>

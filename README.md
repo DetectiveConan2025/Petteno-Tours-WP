@@ -21,6 +21,7 @@ senza toccare il codice e senza database.
 | Rotte scolastiche | tabella linee/orari (pagina `/rotte-scolastiche/`, linkabile per i bandi) |
 | Pagina Contatti | intestazione del modulo preventivo |
 | Banner finale | fascia prima del footer |
+| Privacy policy / Cookie policy | testi delle pagine `/privacy/` e `/cookie/` |
 
 I contenuti sono file JSON in `src/content/`, le foto in `public/images/`.
 
@@ -78,6 +79,19 @@ Per inviare da un indirizzo `@pettenotours.it` va verificato il dominio su
 Resend aggiungendo i record DNS **SPF, DKIM e DMARC** che Resend indica.
 Finché il dominio non è disponibile, il modulo risponde con un errore e
 mostra l'email aziendale come alternativa.
+
+### Privacy (GDPR)
+
+- **Il modulo non salva nulla**: `/api/preventivo` inoltra i dati solo come
+  email alla casella Gmail (via Resend) e non li scrive in database, file o
+  nel pannello. Il pannello `/keystatic` gestisce solo i contenuti del sito.
+- Font ospitati sul sito (`@fontsource-variable/*`): nessuna richiesta a
+  Google Fonts dalle pagine pubbliche.
+- Nessun cookie di statistica/profilazione → nessun banner necessario.
+  Se si aggiungono Analytics, Ads o Pixel servono banner di consenso
+  preventivo e cookie policy aggiornata (es. Iubenda).
+- Testi di Privacy e Cookie policy: base di partenza, da far rivedere a un
+  consulente; si aggiornano dal pannello.
 
 ### Dominio
 
