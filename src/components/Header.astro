@@ -1,0 +1,29 @@
+---
+import { getNavLinks, URLS } from '../lib/site';
+const { links } = await getNavLinks();
+---
+<a href="#main" class="sr-only">Vai al contenuto principale</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a href={URLS.home} class="brand" aria-label="Pettenò Tours — home">
+      <img src="/images/logo.png" alt="Pettenò Tours" class="brand-logo" width="240" height="80" />
+    </a>
+
+    <nav class="nav" aria-label="Navigazione principale">
+      {links.map((l) => <a href={l.href}>{l.label}</a>)}
+    </nav>
+
+    <div class="header-actions">
+      <a href={URLS.contatti} class="btn btn-primary header-cta">Richiedi preventivo</a>
+      <button class="nav-toggle" aria-expanded="false" aria-controls="mobile-nav" aria-label="Apri menù">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+
+  <nav id="mobile-nav" class="mobile-nav" aria-label="Navigazione mobile" hidden>
+    {links.map((l) => <a href={l.href} class="mobile-link">{l.label}</a>)}
+    <a href={URLS.contatti} class="btn btn-primary mobile-cta">Richiedi preventivo</a>
+  </nav>
+</header>

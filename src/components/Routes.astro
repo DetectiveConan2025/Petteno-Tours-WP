@@ -1,0 +1,34 @@
+---
+import { getRotte } from '../lib/site';
+const r = await getRotte();
+const linee = r.linee.filter((l) => l.nome.trim());
+---
+<section id="rotte" class="section routes">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">{r.kicker}</span>
+      <h1 class="h2">{r.titolo}</h1>
+      <p class="lead">{r.lead}</p>
+    </div>
+
+    {linee.length > 0 && (
+      <div class="routes-table-wrap reveal">
+        <table class="routes-table">
+          <thead>
+            <tr><th scope="col">Linea</th><th scope="col">Orari</th></tr>
+          </thead>
+          <tbody>
+            {linee.map((l) => (
+              <tr>
+                <th scope="row" class="route-name">{l.nome}</th>
+                <td class="route-meta">{l.orari || '—'}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )}
+
+    {r.nota && <p class="fleet-note">{r.nota}</p>}
+  </div>
+</section>

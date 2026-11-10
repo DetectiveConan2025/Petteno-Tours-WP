@@ -12,3 +12,11 @@ Thumbs.db
 
 # Log e cache
 *.log
+
+# Astro / hosting
+dist/
+.astro/
+.netlify/
+.env
+.env.*
+!.env.example

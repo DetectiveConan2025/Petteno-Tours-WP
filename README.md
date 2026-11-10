@@ -1,109 +1,87 @@
-# Pettenò Tours — tema WordPress
+# Pettenò Tours — sito web (Astro + Keystatic)
 
-Replica in **WordPress** del sito vetrina di Pettenò Tours (noleggio bus
-turistici con conducente). È la trasposizione fedele del progetto
-[Astro `Petteno-Tours`](https://github.com/DetectiveConan2025/Petteno-Tours):
-stessa landing page singola, stessa palette **azzurro / bianco**, stessi
-contenuti, sezioni e animazioni — riscritta come tema classico per WordPress.
+Sito vetrina di **Pettenò Tours** (noleggio pullman con conducente, Salzano VE).
+Il sito è **statico** (HTML pre-generato: veloce, sicuro, quasi gratis da
+ospitare) e i contenuti si modificano da un **pannello** su `/keystatic`,
+senza toccare il codice e senza database.
 
-## Sezioni
+> La versione WordPress precedente resta disponibile nella storia git
+> (branch `main` / commit precedenti).
 
-La home page è composta dalle stesse sezioni dell'originale, nello stesso ordine:
+## Cosa si può modificare dal pannello
 
-1. **Header** sticky con navigazione ad ancore e menù mobile
-2. **Hero** a tutto schermo con slideshow di sfondo (crossfade + Ken Burns)
-3. **Servizi** — griglia "bento" di sei servizi con icone inline
-4. **Flotta** — Gran Turismo e Scuolabus con foto e specifiche
-5. **Chi siamo** — testo aziendale + valori
-6. **Contatti** — recapiti reali + form preventivo
-7. **Footer** con colonne di link, recapiti e riga legale
+| Voce del pannello | Cosa contiene |
+|---|---|
+| Azienda e recapiti | ragione sociale, P.IVA, telefoni, email, WhatsApp, indirizzo, descrizione per Google |
+| Hero | testi iniziali e **slideshow foto** (quante foto si vuole) |
+| Servizi | schede servizio (titolo, testo, icona), sezione attivabile |
+| Flotta — intestazione | titolo, testo, nota |
+| Mezzi della flotta | un mezzo per scheda: posti, descrizione, dotazioni, **foto e album** |
+| Chi siamo | paragrafi e valori |
+| Rotte scolastiche | tabella linee/orari (pagina `/rotte-scolastiche/`, linkabile per i bandi) |
+| Pagina Contatti | intestazione del modulo preventivo |
+| Banner finale | fascia prima del footer |
 
-## Struttura del tema
+I contenuti sono file JSON in `src/content/`, le foto in `public/images/`.
 
-```
-.
-├── style.css                 # header del tema + design token + tutte le sezioni
-├── functions.php             # setup, enqueue, meta SEO/JSON-LD, handler form (AJAX)
-├── header.php                # <head> + header sticky con navigazione
-├── footer.php                # footer + chiusura <body>
-├── front-page.php            # assembla le sezioni della home
-├── index.php                 # fallback (stesse sezioni della home)
-├── template-parts/
-│   ├── hero.php
-│   ├── services.php
-│   ├── fleet.php
-│   ├── about.php
-│   └── contact.php
-├── assets/
-│   ├── js/main.js            # menù mobile, reveal on scroll, anno, invio form
-│   └── images/               # logo, foto hero/flotta, favicon, apple-touch-icon
-└── screenshot.png            # anteprima per la bacheca di WordPress
+## Sviluppo in locale
+
+```bash
+npm install
+npm run dev
 ```
 
-## Installazione
+- Sito: http://127.0.0.1:4321
+- Pannello: http://127.0.0.1:4321/keystatic (in locale salva direttamente i file)
 
-Questo repository **è** il tema: la cartella va messa fra i temi di WordPress.
+## Struttura
 
-1. Copia (o clona) questa cartella in `wp-content/themes/petteno-tours/`:
-   ```bash
-   git clone <repo> wp-content/themes/petteno-tours
-   ```
-   In alternativa, comprimi la cartella in uno `.zip` e caricala da
-   **Aspetto → Temi → Aggiungi nuovo → Carica tema**.
-2. Attiva il tema da **Aspetto → Temi**.
-3. (Consigliato) In **Impostazioni → Lettura** imposta come «La tua home page
-   visualizza» una **pagina statica** vuota, così WordPress userà
-   `front-page.php`. Non è obbligatorio: anche senza, `index.php` mostra le
-   stesse sezioni.
+```
+keystatic.config.ts        # modello dei contenuti del pannello
+astro.config.mjs           # Astro + adapter Netlify + sitemap
+src/content/               # contenuti (JSON) modificati dal pannello
+src/lib/site.ts            # lettura contenuti + helper
+src/layouts/Base.astro     # <head> SEO/OG/JSON-LD, header, footer
+src/components/            # sezioni (Hero, Services, Fleet, …)
+src/pages/                 # /, /contatti, /rotte-scolastiche, 404
+src/pages/api/preventivo.ts# invio email del modulo (Resend)
+src/scripts/main.js        # animazioni, menu, slideshow, lightbox, form
+src/styles/global.css      # design token + stili
+public/images/             # logo, foto hero e flotta
+```
 
-Serve WordPress 6.0+ e PHP 7.4+.
+## Messa online (Netlify)
 
-## Form preventivo
+1. Netlify → *Add new site → Import from Git* → questo repository.
+   Build e cartella sono già in `netlify.toml`.
+2. Imposta le variabili d'ambiente (vedi `.env.example`):
+   - `RESEND_API_KEY`, `MAIL_TO`, `MAIL_FROM` per le email del modulo;
+   - facoltative `PUBLIC_TURNSTILE_SITE_KEY` / `TURNSTILE_SECRET_KEY` (anti-bot Cloudflare).
+3. **Pannello online**: apri `https://<sito>/keystatic` e segui la procedura
+   guidata, che crea una GitHub App e fornisce
+   `KEYSTATIC_GITHUB_CLIENT_ID`, `KEYSTATIC_GITHUB_CLIENT_SECRET`,
+   `KEYSTATIC_SECRET`, `PUBLIC_KEYSTATIC_GITHUB_APP_SLUG` da aggiungere su
+   Netlify. Il repository di destinazione è indicato in `keystatic.config.ts`.
 
-Nel sito Astro il form inviava a `public/mail.php`. Qui usa il meccanismo
-standard di WordPress (`admin-ajax.php` + `wp_mail()`), con verifica del nonce:
+### Sicurezza del pannello
 
-- L'email di destinazione è, di default, quella dell'amministratore del sito
-  (**Impostazioni → Generali → Indirizzo email**).
-- È personalizzabile via filtro:
-  ```php
-  add_filter( 'petteno_tours_recipient', fn() => 'pettenotours@gmail.com' );
-  ```
-- Perché `wp_mail()` recapiti in modo affidabile è consigliato un plugin SMTP
-  (es. WP Mail SMTP), come su qualsiasi installazione WordPress.
+Online si entra su `/keystatic` **con un account GitHub** che abbia accesso
+in scrittura al repository. Non c'è una password "del sito" da gestire:
+- attivare la **verifica in due passaggi (2FA)** su GitHub (app OTP o passkey);
+- dare accesso al repository solo alle persone che devono modificare il sito;
+- ogni modifica è un commit: si vede chi ha cambiato cosa e si può annullare.
 
-## Personalizzazione
+### Email del modulo preventivo
 
-- **Logo** — di default `assets/images/logo.png`; impostando un logo da
-  **Aspetto → Personalizza → Identità del sito** viene usato quello.
-- **Colori** — design token in `style.css` sotto `:root`.
-- **Contenuti delle sezioni** — **Aspetto → Personalizza → Pettenò Tours**
-  (testi, foto, recapiti) con interruttori per mostrare/nascondere le sezioni.
+Il modulo invia a `/api/preventivo`, che usa [Resend](https://resend.com).
+Per inviare da un indirizzo `@pettenotours.it` va verificato il dominio su
+Resend aggiungendo i record DNS **SPF, DKIM e DMARC** che Resend indica.
+Finché il dominio non è disponibile, il modulo risponde con un errore e
+mostra l'email aziendale come alternativa.
 
-## Flotta gestita dall'admin (Mezzi)
+### Dominio
 
-I veicoli sono un tipo di contenuto dedicato: menu **Mezzi** nella bacheca.
-
-- Ogni mezzo ha: titolo (nome), **foto principale** (immagine in evidenza),
-  posti, descrizione, dotazioni e un **album foto** (galleria).
-- La sezione Flotta li mostra in una **griglia che si adatta** al numero di
-  veicoli (1 → 2 → 3 colonne) e l'album si apre a tutto schermo (**lightbox**).
-- L'ordine si imposta con l'attributo «Ordine» della pagina.
-- Alla **prima attivazione** del tema vengono creati in automatico i due mezzi
-  predefiniti (Gran Turismo e Scuolabus), con foto e dati già compilati, così
-  la flotta parte popolata e gestibile dal menu **Mezzi**. La creazione avviene
-  una sola volta (non si ripete se poi li modifichi o elimini).
-
-## Slideshow hero a immagini illimitate
-
-In **Aspetto → Personalizza → Pettenò Tours → Hero** il campo «Immagini dello
-slideshow» permette di aggiungere quante foto vuoi: scorrono in dissolvenza con
-zoom. Se lasciato vuoto, vengono usate le due foto predefinite.
-
-## Dati dell'azienda (reali)
-
-- **Ragione sociale:** Pettenò Tours S.a.s. di Pettenò Luca & C.
-- **Sede:** Via Leonardo da Vinci 39/B, 30030 Salzano (VE)
-- **Telefono:** +39 348 928 0768 — Fisso: 041 482231
-- **Email:** pettenotours@gmail.com
-- **P.IVA:** 02172370278
+Quando il dominio è sotto il controllo dell'azienda: Netlify → *Domain
+management* → aggiungi `pettenotours.it` / `www.pettenotours.it` e aggiorna i
+DNS. Attenzione alle caselle email esistenti (record **MX**) e a **DNSSEC**
+prima di cambiare nameserver.

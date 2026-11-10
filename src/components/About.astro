@@ -1,0 +1,26 @@
+---
+import { getChiSiamo, URLS } from '../lib/site';
+const c = await getChiSiamo();
+---
+<section id="chi-siamo" class="section about">
+  <div class="wrap about-grid">
+    <div class="about-copy reveal">
+      <span class="kicker">{c.kicker}</span>
+      <h2>{c.titolo}</h2>
+      {c.paragrafi.map((p) => <p>{p}</p>)}
+      <a href={URLS.contatti} class="btn btn-primary">{c.cta}</a>
+    </div>
+
+    <ul class="values reveal">
+      {c.valori.map((v) => (
+        <li>
+          <span class="dot" aria-hidden="true"></span>
+          <div>
+            <h3>{v.titolo}</h3>
+            <p>{v.descrizione}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

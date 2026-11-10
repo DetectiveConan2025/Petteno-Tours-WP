@@ -1,0 +1,20 @@
+{
+  "badge": "Noleggio pullman con conducente · Veneto",
+  "titoloRiga1": "Il tuo viaggio",
+  "titoloPrima": "in",
+  "titoloAccento": "buone mani",
+  "titoloDopo": ".",
+  "lead": "Da Robegano di Salzano, Pettenò Tours porta gruppi, scuole e aziende dove devono andare — in Italia e in tutta Europa, con pullman Gran Turismo, Scuolabus e autisti esperti.",
+  "cta1": "Richiedi un preventivo",
+  "cta2": "Scopri la flotta",
+  "immagini": [
+    {
+      "immagine": "/images/hero/hero-1.jpg",
+      "alt": "Pullman Pettenò Tours con palme al sole"
+    },
+    {
+      "immagine": "/images/hero/hero-2.jpg",
+      "alt": "Pullman Pettenò Tours con panorama alpino"
+    }
+  ]
+}

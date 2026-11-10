@@ -1,0 +1,25 @@
+---
+import Icon from './Icon.astro';
+import { getServizi, URLS } from '../lib/site';
+const s = await getServizi();
+---
+<section id="servizi" class="section services">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">{s.kicker}</span>
+      <h2>{s.titolo}</h2>
+      <p class="lead">{s.lead}</p>
+    </div>
+
+    <div class="bento">
+      {s.elenco.map((item, i) => (
+        <article class:list={['tile', 'reveal', { 'tile-feature': i === 0 }]}>
+          <span class="tile-icon"><Icon name={item.icona} /></span>
+          <h3>{item.titolo}</h3>
+          <p>{item.descrizione}</p>
+          <a href={URLS.contatti} class="tile-link">Richiedi info <Icon name="freccia" strokeWidth={2} /></a>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

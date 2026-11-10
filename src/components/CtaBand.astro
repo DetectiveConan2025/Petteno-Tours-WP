@@ -1,0 +1,22 @@
+---
+import Icon from './Icon.astro';
+import { getAzienda, getCtaBand, telHref, URLS } from '../lib/site';
+const a = await getAzienda();
+const c = await getCtaBand();
+---
+<section class="cta-band" aria-label="Richiedi un preventivo">
+  <div class="wrap cta-band-inner">
+    <div class="cta-band-copy reveal">
+      <span class="kicker kicker-light">{c.kicker}</span>
+      <h2>{c.titolo}</h2>
+    </div>
+    <div class="cta-band-actions reveal">
+      {a.telMobile && (
+        <a href={telHref(a.telMobile)} class="cta-band-phone">
+          <Icon name="telefono" size={18} strokeWidth={2} />{a.telMobile}
+        </a>
+      )}
+      <a href={URLS.contatti} class="btn btn-white">{c.bottone} <Icon name="freccia" strokeWidth={2} /></a>
+    </div>
+  </div>
+</section>

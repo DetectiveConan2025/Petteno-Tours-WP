@@ -1,0 +1,51 @@
+---
+import Icon from './Icon.astro';
+import { getFlotta, getMezzi } from '../lib/site';
+const f = await getFlotta();
+const mezzi = await getMezzi();
+---
+<section id="flotta" class="section fleet">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">{f.kicker}</span>
+      <h2>{f.titolo}</h2>
+      <p class="lead">{f.lead}</p>
+    </div>
+
+    <div class="fleet-grid">
+      {mezzi.map((m) => {
+        const alt = `${m.nome} — Pettenò Tours`;
+        // Album: copertina + galleria (senza doppioni).
+        const album = [m.copertina, ...m.galleria]
+          .filter((src): src is string => Boolean(src))
+          .filter((src, i, arr) => arr.indexOf(src) === i)
+          .map((src) => ({ src, alt }));
+        const cover = m.copertina ?? album[0]?.src;
+        const coverImg = cover && <img src={cover} alt={alt} loading="lazy" width="800" height="600" />;
+        return (
+          <article class="fleet-card reveal">
+            <div class="fleet-art">
+              {album.length > 1 ? (
+                <button type="button" class="fleet-album" data-album={JSON.stringify(album)} aria-label={`Apri la galleria di ${m.nome}`}>
+                  {coverImg}
+                  <span class="fleet-album-badge"><Icon name="album" size={14} strokeWidth={2} />{album.length}</span>
+                </button>
+              ) : coverImg}
+            </div>
+            <div class="fleet-body">
+              <div class="fleet-top">
+                <h3>{m.nome}</h3>
+                {m.posti && <span class="seats">{m.posti}</span>}
+              </div>
+              {m.descrizione && <p>{m.descrizione}</p>}
+              {m.dotazioni.length > 0 && (
+                <ul class="specs">{m.dotazioni.map((d) => <li>{d}</li>)}</ul>
+              )}
+            </div>
+          </article>
+        );
+      })}
+    </div>
+    {f.nota && <p class="fleet-note">{f.nota}</p>}
+  </div>
+</section>

@@ -1,0 +1,22 @@
+{
+  "mostra": true,
+  "kicker": "Servizio scolastico",
+  "titolo": "Le rotte del trasporto scolastico",
+  "lead": "Le corse attive per il servizio di trasporto scolastico: linee, fermate e orari. Utile anche per la partecipazione ai bandi.",
+  "cta": "Vedi tutti gli orari",
+  "linee": [
+    {
+      "nome": "Linea 1 — Salzano · Robegano · Mirano",
+      "orari": "Andata 07:10 · Ritorno 13:30"
+    },
+    {
+      "nome": "Linea 2 — Salzano · Cappella · Noale",
+      "orari": "Andata 07:00 · Ritorno 13:45"
+    },
+    {
+      "nome": "Linea 3 — Salzano · Rivale · Spinea",
+      "orari": "Andata 07:20 · Ritorno 14:00"
+    }
+  ],
+  "nota": "Orari indicativi: le corse possono variare in base al calendario scolastico e alle esigenze dell’istituto."
+}
