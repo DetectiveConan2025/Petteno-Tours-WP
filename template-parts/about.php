@@ -17,7 +17,7 @@ $petteno_values = array(
 	),
 );
 ?>
-<section id="chi-siamo" class="section about">
+<section id="chi-siamo" class="section about <?php echo esc_attr( isset( $args['tone'] ) ? $args['tone'] : '' ); ?>">
 	<div class="wrap about-grid">
 		<div class="about-copy reveal">
 			<span class="kicker"><?php echo esc_html( petteno_opt( 'about_kicker' ) ); ?></span>

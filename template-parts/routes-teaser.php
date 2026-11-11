@@ -16,7 +16,7 @@ foreach ( $petteno_lines as $petteno_line ) {
 	}
 }
 ?>
-<section id="rotte" class="section routes-teaser-section">
+<section id="rotte" class="section routes-teaser-section <?php echo esc_attr( isset( $args['tone'] ) ? $args['tone'] : '' ); ?>">
 	<div class="wrap routes-teaser">
 		<div class="routes-teaser-copy reveal">
 			<span class="kicker"><?php echo esc_html( petteno_opt( 'rotte_kicker' ) ); ?></span>

@@ -67,7 +67,7 @@ if ( ! $petteno_fleet ) {
 	}
 }
 ?>
-<section id="flotta" class="section fleet">
+<section id="flotta" class="section fleet <?php echo esc_attr( isset( $args['tone'] ) ? $args['tone'] : '' ); ?>">
 	<div class="wrap">
 		<div class="section-head reveal">
 			<span class="kicker"><?php echo esc_html( petteno_opt( 'fleet_kicker' ) ); ?></span>

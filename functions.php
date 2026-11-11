@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'PETTENO_TOURS_VERSION' ) ) {
-	define( 'PETTENO_TOURS_VERSION', '1.6.1' );
+	define( 'PETTENO_TOURS_VERSION', '1.6.2' );
 }
 
 /**
@@ -520,8 +520,14 @@ function petteno_tours_handle_preventivo() {
 		wp_send_json( array( 'ok' => false, 'msg' => 'Campi obbligatori mancanti.' ), 400 );
 	}
 
-	// Destinatario: filtrabile, di default l'admin del sito.
-	$to = apply_filters( 'petteno_tours_recipient', get_option( 'admin_email', 'pettenotours@gmail.com' ) );
+	// Destinatario: l'email aziendale del Customizer (Azienda e contatti),
+	// NON l'email di amministrazione di WordPress (che può essere ancora
+	// quella di un vecchio gestore o in attesa di conferma). Filtrabile.
+	$to = petteno_opt( 'email' );
+	if ( ! is_email( $to ) ) {
+		$to = get_option( 'admin_email' );
+	}
+	$to = apply_filters( 'petteno_tours_recipient', $to );
 
 	$subject = 'Richiesta preventivo dal sito — ' . $nome;
 	$body    = implode(

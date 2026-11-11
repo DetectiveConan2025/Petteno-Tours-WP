@@ -4,7 +4,7 @@ Theme URI: https://www.pettenotours.it
 Author: Pettenò Tours
 Author URI: https://www.pettenotours.it
 Description: Tema WordPress per Pettenò Tours — noleggio bus turistici con conducente. Replica in WordPress del sito vetrina (landing page singola, palette azzurro/bianco). Sezioni: Hero, Servizi, Flotta, Rotte scolastiche, Chi siamo, Contatti, Privacy e Cookie.
-Version: 1.6.1
+Version: 1.6.2
 Requires at least: 6.0
 Tested up to: 6.5
 Requires PHP: 7.4
@@ -1384,3 +1384,23 @@ a.ccard-value:hover { color: var(--brand-bright); text-decoration: underline; }
 /* Il logo non può mai allargare l'header, qualunque immagine venga caricata. */
 .site-header .brand { flex-shrink: 0; max-width: 220px; }
 .site-header .brand-logo { width: auto; max-width: 100%; object-fit: contain; }
+
+/* ==========================================================================
+   Alternanza sfondi delle sezioni della home (v1.6.2)
+   Calcolata in front-page.php sulle sole sezioni attive.
+   ========================================================================== */
+.section.tone-light { background: var(--bg); }
+.section.tone-tint { background: var(--surface); }
+/* Schede della flotta: sempre staccate dallo sfondo, qualunque esso sia. */
+.fleet.tone-light .fleet-card { background: var(--surface); }
+.fleet.tone-tint .fleet-card { background: var(--bg); }
+
+/* Riquadro dei valori (Chi siamo): blu con testo bianco. */
+.values {
+  background: var(--brand-strong);
+  border-color: transparent;
+  box-shadow: 0 18px 40px -22px oklch(35% 0.12 252 / 0.6);
+}
+.values h3 { color: #fff; }
+.values p { color: oklch(92% 0.03 240); }
+.values .dot { background: #fff; box-shadow: 0 0 0 4px oklch(100% 0 0 / 0.22); }

@@ -175,7 +175,7 @@ function petteno_tours_customize_register( $wp ) {
 	petteno_tours_add_text( $wp, 'petteno_contatti', 'piva', __( 'Partita IVA', 'petteno-tours' ) );
 	petteno_tours_add_text( $wp, 'petteno_contatti', 'tel_mobile', __( 'Telefono (cellulare)', 'petteno-tours' ) );
 	petteno_tours_add_text( $wp, 'petteno_contatti', 'tel_fisso', __( 'Telefono fisso', 'petteno-tours' ) );
-	petteno_tours_add_text( $wp, 'petteno_contatti', 'email', __( 'Email', 'petteno-tours' ), 'email' );
+	petteno_tours_add_text( $wp, 'petteno_contatti', 'email', __( 'Email (mostrata nel sito e destinataria delle richieste del modulo)', 'petteno-tours' ), 'email' );
 	petteno_tours_add_text( $wp, 'petteno_contatti', 'via', __( 'Via e civico', 'petteno-tours' ) );
 	petteno_tours_add_text( $wp, 'petteno_contatti', 'cap', __( 'CAP', 'petteno-tours' ) );
 	petteno_tours_add_text( $wp, 'petteno_contatti', 'citta', __( 'Città', 'petteno-tours' ) );

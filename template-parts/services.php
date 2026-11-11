@@ -36,7 +36,7 @@ $petteno_svg_allowed = array(
 	'polyline' => array( 'points' => true ),
 );
 ?>
-<section id="servizi" class="section services">
+<section id="servizi" class="section services <?php echo esc_attr( isset( $args['tone'] ) ? $args['tone'] : '' ); ?>">
 	<div class="wrap">
 		<div class="section-head reveal">
 			<span class="kicker"><?php echo esc_html( petteno_opt( 'serv_kicker' ) ); ?></span>
