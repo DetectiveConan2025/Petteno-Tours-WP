@@ -41,7 +41,8 @@ if ( $petteno_q->have_posts() ) {
 
 		$petteno_fleet[] = array(
 			'name'     => get_the_title(),
-			'seats'    => get_post_meta( $petteno_pid, '_petteno_posti', true ),
+			// Posti nascosti se il mezzo ha il flag "Nascondi numero posti".
+			'seats'    => petteno_tours_mezzo_hide_seats( $petteno_pid ) ? '' : get_post_meta( $petteno_pid, '_petteno_posti', true ),
 			'desc'     => get_post_meta( $petteno_pid, '_petteno_desc', true ),
 			'specs'    => petteno_split_list( get_post_meta( $petteno_pid, '_petteno_dotazioni', true ) ),
 			'cover_id' => $petteno_cov,

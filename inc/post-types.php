@@ -86,6 +86,12 @@ function petteno_tours_mezzo_metabox_render( $post ) {
 		<input type="text" id="petteno_posti" name="petteno_posti" value="<?php echo esc_attr( $posti ); ?>" />
 	</div>
 	<div class="petteno-field">
+		<label>
+			<input type="checkbox" name="petteno_nascondi_posti" value="1" <?php checked( petteno_tours_mezzo_hide_seats( $post->ID ) ); ?> />
+			<?php esc_html_e( 'Nascondi il numero di posti sul sito', 'petteno-tours' ); ?>
+		</label>
+	</div>
+	<div class="petteno-field">
 		<label for="petteno_desc"><?php esc_html_e( 'Descrizione', 'petteno-tours' ); ?></label>
 		<textarea id="petteno_desc" name="petteno_desc" rows="3"><?php echo esc_textarea( $desc ); ?></textarea>
 	</div>
@@ -133,6 +139,12 @@ function petteno_tours_mezzo_save( $post_id ) {
 	update_post_meta( $post_id, '_petteno_posti', isset( $_POST['petteno_posti'] ) ? sanitize_text_field( wp_unslash( $_POST['petteno_posti'] ) ) : '' );
 	update_post_meta( $post_id, '_petteno_desc', isset( $_POST['petteno_desc'] ) ? sanitize_textarea_field( wp_unslash( $_POST['petteno_desc'] ) ) : '' );
 	update_post_meta( $post_id, '_petteno_dotazioni', isset( $_POST['petteno_dotazioni'] ) ? sanitize_textarea_field( wp_unslash( $_POST['petteno_dotazioni'] ) ) : '' );
+
+	if ( ! empty( $_POST['petteno_nascondi_posti'] ) ) {
+		update_post_meta( $post_id, '_petteno_nascondi_posti', '1' );
+	} else {
+		delete_post_meta( $post_id, '_petteno_nascondi_posti' );
+	}
 
 	$gallery = isset( $_POST['petteno_gallery'] ) ? sanitize_text_field( wp_unslash( $_POST['petteno_gallery'] ) ) : '';
 	$ids     = array_filter( array_map( 'absint', explode( ',', $gallery ) ) );
@@ -376,3 +388,127 @@ function petteno_tours_seed_routes_page() {
 }
 add_action( 'after_switch_theme', 'petteno_tours_seed_routes_page' );
 add_action( 'admin_init', 'petteno_tours_seed_routes_page' );
+
+/* -------------------------------------------------------------------------- */
+/* Flag "Nascondi posti" (v1.7)                                                */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Il numero di posti di questo mezzo è nascosto sul sito?
+ *
+ * @param int $post_id ID del mezzo.
+ * @return bool
+ */
+function petteno_tours_mezzo_hide_seats( $post_id ) {
+	return '1' === (string) get_post_meta( $post_id, '_petteno_nascondi_posti', true );
+}
+
+/**
+ * Colonna "Posti sul sito" nell'elenco dei mezzi.
+ *
+ * @param array $columns Colonne.
+ * @return array
+ */
+function petteno_tours_mezzi_columns( $columns ) {
+	$new = array();
+	foreach ( $columns as $key => $label ) {
+		$new[ $key ] = $label;
+		if ( 'title' === $key ) {
+			$new['petteno_posti'] = __( 'Posti sul sito', 'petteno-tours' );
+		}
+	}
+	return $new;
+}
+add_filter( 'manage_petteno_mezzo_posts_columns', 'petteno_tours_mezzi_columns' );
+
+/**
+ * Contenuto della colonna: numero di posti + interruttore Mostra/Nascondi.
+ *
+ * @param string $column  Colonna.
+ * @param int    $post_id ID del mezzo.
+ */
+function petteno_tours_mezzi_column_content( $column, $post_id ) {
+	if ( 'petteno_posti' !== $column ) {
+		return;
+	}
+	$posti  = get_post_meta( $post_id, '_petteno_posti', true );
+	$hidden = petteno_tours_mezzo_hide_seats( $post_id );
+	$url    = wp_nonce_url(
+		add_query_arg(
+			array(
+				'action' => 'petteno_toggle_posti',
+				'mezzo'  => $post_id,
+			),
+			admin_url( 'admin-post.php' )
+		),
+		'petteno_toggle_posti_' . $post_id
+	);
+
+	echo '<span style="' . ( $hidden ? 'text-decoration:line-through;color:#8a8a8a;' : '' ) . '">' . esc_html( $posti ? $posti : '—' ) . '</span><br />';
+	if ( $hidden ) {
+		echo '<span style="color:#b32d2e;font-weight:600;">' . esc_html__( 'Nascosti', 'petteno-tours' ) . '</span> · ';
+		echo '<a href="' . esc_url( $url ) . '">' . esc_html__( 'Mostra', 'petteno-tours' ) . '</a>';
+	} else {
+		echo '<span style="color:#1a7f37;font-weight:600;">' . esc_html__( 'Visibili', 'petteno-tours' ) . '</span> · ';
+		echo '<a href="' . esc_url( $url ) . '">' . esc_html__( 'Nascondi', 'petteno-tours' ) . '</a>';
+	}
+}
+add_action( 'manage_petteno_mezzo_posts_custom_column', 'petteno_tours_mezzi_column_content', 10, 2 );
+
+/**
+ * Clic su "Mostra"/"Nascondi" nella colonna: inverte il flag e torna all'elenco.
+ */
+function petteno_tours_toggle_posti() {
+	$post_id = isset( $_GET['mezzo'] ) ? absint( $_GET['mezzo'] ) : 0;
+	check_admin_referer( 'petteno_toggle_posti_' . $post_id );
+	if ( ! $post_id || 'petteno_mezzo' !== get_post_type( $post_id ) || ! current_user_can( 'edit_post', $post_id ) ) {
+		wp_die( esc_html__( 'Operazione non consentita.', 'petteno-tours' ) );
+	}
+	if ( petteno_tours_mezzo_hide_seats( $post_id ) ) {
+		delete_post_meta( $post_id, '_petteno_nascondi_posti' );
+	} else {
+		update_post_meta( $post_id, '_petteno_nascondi_posti', '1' );
+	}
+	wp_safe_redirect( admin_url( 'edit.php?post_type=petteno_mezzo' ) );
+	exit;
+}
+add_action( 'admin_post_petteno_toggle_posti', 'petteno_tours_toggle_posti' );
+
+/**
+ * Azioni di gruppo: nascondere/mostrare i posti su più mezzi (o tutti).
+ *
+ * @param array $actions Azioni.
+ * @return array
+ */
+function petteno_tours_mezzi_bulk_actions( $actions ) {
+	$actions['petteno_nascondi_posti'] = __( 'Nascondi numero posti', 'petteno-tours' );
+	$actions['petteno_mostra_posti']   = __( 'Mostra numero posti', 'petteno-tours' );
+	return $actions;
+}
+add_filter( 'bulk_actions-edit-petteno_mezzo', 'petteno_tours_mezzi_bulk_actions' );
+
+/**
+ * Esegue le azioni di gruppo sui posti.
+ *
+ * @param string $redirect URL di ritorno.
+ * @param string $action   Azione scelta.
+ * @param int[]  $ids      Mezzi selezionati.
+ * @return string
+ */
+function petteno_tours_mezzi_handle_bulk( $redirect, $action, $ids ) {
+	if ( 'petteno_nascondi_posti' !== $action && 'petteno_mostra_posti' !== $action ) {
+		return $redirect;
+	}
+	foreach ( $ids as $id ) {
+		if ( ! current_user_can( 'edit_post', $id ) ) {
+			continue;
+		}
+		if ( 'petteno_nascondi_posti' === $action ) {
+			update_post_meta( $id, '_petteno_nascondi_posti', '1' );
+		} else {
+			delete_post_meta( $id, '_petteno_nascondi_posti' );
+		}
+	}
+	return $redirect;
+}
+add_filter( 'handle_bulk_actions-edit-petteno_mezzo', 'petteno_tours_mezzi_handle_bulk', 10, 3 );
