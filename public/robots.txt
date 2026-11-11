@@ -1,5 +1,0 @@
-User-agent: *
-Disallow: /keystatic
-Disallow: /api/
-
-Sitemap: https://www.pettenotours.it/sitemap-index.xml
