@@ -12,6 +12,12 @@ import keystatic from '@keystatic/astro';
 export default defineConfig({
   site: 'https://www.pettenotours.it',
   trailingSlash: 'ignore',
+  // Vecchi indirizzi del sito WordPress → nuove pagine (301, per Google e
+  // per i link già condivisi).
+  redirects: {
+    '/about': { status: 301, destination: '/#chi-siamo' },
+    '/contact': { status: 301, destination: '/contatti/' },
+  },
   adapter: netlify(),
   integrations: [
     react(),
