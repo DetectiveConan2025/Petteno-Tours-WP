@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'PETTENO_TOURS_VERSION' ) ) {
-	define( 'PETTENO_TOURS_VERSION', '1.6.2' );
+	define( 'PETTENO_TOURS_VERSION', '1.6.3' );
 }
 
 /**

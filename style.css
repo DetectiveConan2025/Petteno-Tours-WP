@@ -4,7 +4,7 @@ Theme URI: https://www.pettenotours.it
 Author: Pettenò Tours
 Author URI: https://www.pettenotours.it
 Description: Tema WordPress per Pettenò Tours — noleggio bus turistici con conducente. Replica in WordPress del sito vetrina (landing page singola, palette azzurro/bianco). Sezioni: Hero, Servizi, Flotta, Rotte scolastiche, Chi siamo, Contatti, Privacy e Cookie.
-Version: 1.6.2
+Version: 1.6.3
 Requires at least: 6.0
 Tested up to: 6.5
 Requires PHP: 7.4
@@ -1350,7 +1350,7 @@ a.ccard-value:hover { color: var(--brand-bright); text-decoration: underline; }
 .footer-legal a:hover { color: #fff; }
 
 /* Pagine Privacy / Cookie */
-.legal-wrap { max-width: 760px; }
+.legal-wrap { max-width: none; }
 .legal-date { color: var(--muted); font-size: 0.9rem; margin: 0.75rem 0 2rem; }
 .legal-body { color: var(--ink-soft); line-height: 1.7; overflow-wrap: anywhere; }
 .legal-body h2 { font-size: clamp(1.3rem, 1.1rem + 0.8vw, 1.65rem); letter-spacing: -0.01em; margin: 2.2rem 0 0.7rem; color: var(--ink); }
