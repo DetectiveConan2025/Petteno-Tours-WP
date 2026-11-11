@@ -79,7 +79,16 @@ $petteno_cols[]          = array(
 	</div>
 
 	<div class="wrap footer-bottom">
-		<p>© <span id="footer-year"><?php echo esc_html( gmdate( 'Y' ) ); ?></span> <?php echo esc_html( petteno_opt( 'ragione_sociale' ) ); ?> — P.IVA <?php echo esc_html( petteno_opt( 'piva' ) ); ?></p>
+		<p>
+			© <span id="footer-year"><?php echo esc_html( gmdate( 'Y' ) ); ?></span> <?php echo esc_html( petteno_opt( 'ragione_sociale' ) ); ?>
+			— <?php echo esc_html( petteno_address_full() ); ?> — P.IVA <?php echo esc_html( petteno_opt( 'piva' ) ); ?>
+			<?php if ( petteno_opt( 'registro_imprese' ) ) : ?>
+				— <?php echo esc_html( petteno_opt( 'registro_imprese' ) ); ?>
+			<?php endif; ?>
+			<?php if ( petteno_opt( 'rea' ) ) : ?>
+				— <?php echo esc_html( petteno_opt( 'rea' ) ); ?>
+			<?php endif; ?>
+		</p>
 		<p class="footer-legal">
 			<a href="<?php echo esc_url( petteno_tours_privacy_url() ); ?>"><?php esc_html_e( 'Privacy policy', 'petteno-tours' ); ?></a>
 			<span aria-hidden="true">·</span>

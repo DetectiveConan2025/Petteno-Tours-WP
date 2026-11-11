@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'PETTENO_TOURS_VERSION' ) ) {
-	define( 'PETTENO_TOURS_VERSION', '1.7.0' );
+	define( 'PETTENO_TOURS_VERSION', '1.7.1' );
 }
 
 /**
@@ -216,6 +216,10 @@ function petteno_tours_defaults() {
 		// --- Azienda e contatti (riusati in Contatti, Footer, JSON-LD) ---
 		'ragione_sociale'  => 'Pettenò Tours S.a.s. di Pettenò Luca & C.',
 		'piva'             => '02172370278',
+		// Dati obbligatori per le società sul sito (art. 2250 c.c.): ufficio
+		// del Registro Imprese e numero di iscrizione, numero REA. Da visura.
+		'registro_imprese' => '',
+		'rea'              => '',
 		'tel_mobile'       => '+39 348 928 0768',
 		'tel_fisso'        => '041 482231',
 		'email'            => 'pettenotours@gmail.com',
@@ -663,3 +667,49 @@ function petteno_tours_preventivo_email_html( $f ) {
 		. '</td></tr>'
 		. '</table></td></tr></table></body></html>';
 }
+
+/* -------------------------------------------------------------------------- */
+/* Riservatezza degli utenti WordPress (v1.7.1)                               */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Nasconde l'elenco utenti dell'API REST ai visitatori non collegati:
+ * di default WordPress pubblica il nome utente dell'amministratore
+ * (utile a chi tenta di indovinare la password) e l'hash Gravatar.
+ *
+ * @param array $endpoints Endpoint REST.
+ * @return array
+ */
+function petteno_tours_hide_rest_users( $endpoints ) {
+	if ( is_user_logged_in() ) {
+		return $endpoints;
+	}
+	foreach ( array_keys( $endpoints ) as $route ) {
+		if ( 0 === strpos( $route, '/wp/v2/users' ) ) {
+			unset( $endpoints[ $route ] );
+		}
+	}
+	return $endpoints;
+}
+add_filter( 'rest_endpoints', 'petteno_tours_hide_rest_users' );
+
+/**
+ * Niente pagine "autore" (/author/nome-utente/ e ?author=1): rimandano alla home.
+ */
+function petteno_tours_no_author_archives() {
+	if ( is_author() || isset( $_GET['author'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		wp_safe_redirect( home_url( '/' ), 301 );
+		exit;
+	}
+}
+add_action( 'template_redirect', 'petteno_tours_no_author_archives', 2 );
+
+// Niente utenti nella sitemap di WordPress.
+add_filter(
+	'wp_sitemaps_add_provider',
+	function ( $provider, $name ) {
+		return 'users' === $name ? false : $provider;
+	},
+	10,
+	2
+);

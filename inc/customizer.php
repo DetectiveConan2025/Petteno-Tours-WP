@@ -173,6 +173,8 @@ function petteno_tours_customize_register( $wp ) {
 	$wp->add_section( 'petteno_contatti', array( 'title' => __( 'Azienda e contatti', 'petteno-tours' ), 'panel' => 'petteno_tours' ) );
 	petteno_tours_add_text( $wp, 'petteno_contatti', 'ragione_sociale', __( 'Ragione sociale', 'petteno-tours' ) );
 	petteno_tours_add_text( $wp, 'petteno_contatti', 'piva', __( 'Partita IVA', 'petteno-tours' ) );
+	petteno_tours_add_text( $wp, 'petteno_contatti', 'registro_imprese', __( 'Registro Imprese (es. "Registro Imprese di Venezia Rovigo n. 02172370278") — dalla visura camerale', 'petteno-tours' ) );
+	petteno_tours_add_text( $wp, 'petteno_contatti', 'rea', __( 'Numero REA (es. "REA VE-123456") — dalla visura camerale', 'petteno-tours' ) );
 	petteno_tours_add_text( $wp, 'petteno_contatti', 'tel_mobile', __( 'Telefono (cellulare)', 'petteno-tours' ) );
 	petteno_tours_add_text( $wp, 'petteno_contatti', 'tel_fisso', __( 'Telefono fisso', 'petteno-tours' ) );
 	petteno_tours_add_text( $wp, 'petteno_contatti', 'email', __( 'Email (mostrata nel sito e destinataria delle richieste del modulo)', 'petteno-tours' ), 'email' );
