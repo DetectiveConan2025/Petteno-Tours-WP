@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'PETTENO_TOURS_VERSION' ) ) {
-	define( 'PETTENO_TOURS_VERSION', '1.6.3' );
+	define( 'PETTENO_TOURS_VERSION', '1.6.4' );
 }
 
 /**
@@ -530,29 +530,136 @@ function petteno_tours_handle_preventivo() {
 	$to = apply_filters( 'petteno_tours_recipient', $to );
 
 	$subject = 'Richiesta preventivo dal sito — ' . $nome;
-	$body    = implode(
+
+	// Data in formato italiano (il campo del browser invia AAAA-MM-GG).
+	$data_it = $data;
+	if ( preg_match( '/^(\d{4})-(\d{2})-(\d{2})$/', $data, $m ) ) {
+		$data_it = $m[3] . '/' . $m[2] . '/' . $m[1];
+	}
+
+	$fields = array(
+		'nome'      => $nome,
+		'email'     => $email,
+		'telefono'  => $telefono,
+		'persone'   => $persone,
+		'data'      => $data_it,
+		'messaggio' => $testo,
+	);
+
+	// Versione testuale (per i programmi di posta che non mostrano l'HTML).
+	$alt_body = implode(
 		"\n",
 		array(
+			'Nuova richiesta di preventivo dal sito',
+			'',
 			'Nome:     ' . $nome,
 			'Email:    ' . $email,
 			'Telefono: ' . $telefono,
 			'Persone:  ' . ( $persone ? $persone : '-' ),
-			'Data:     ' . ( $data ? $data : '-' ),
+			'Data:     ' . ( $data_it ? $data_it : '-' ),
 			'',
 			$testo,
 		)
 	);
 
 	$headers = array(
-		'Content-Type: text/plain; charset=UTF-8',
+		'Content-Type: text/html; charset=UTF-8',
 		'Reply-To: ' . $nome . ' <' . $email . '>',
 	);
 
+	// Aggiunge la versione testuale solo a questa mail.
+	$set_alt = function ( $phpmailer ) use ( $alt_body ) {
+		$phpmailer->AltBody = $alt_body; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+	};
+	add_action( 'phpmailer_init', $set_alt );
+
 	// I dati NON vengono salvati da nessuna parte: si spedisce solo la mail
 	// (tramite WP Mail SMTP, se configurato) e si risponde al browser.
-	$ok = wp_mail( $to, $subject, $body, $headers );
+	$ok = wp_mail( $to, $subject, petteno_tours_preventivo_email_html( $fields ), $headers );
+
+	remove_action( 'phpmailer_init', $set_alt );
 
 	wp_send_json( array( 'ok' => (bool) $ok ) );
 }
 add_action( 'wp_ajax_petteno_tours_preventivo', 'petteno_tours_handle_preventivo' );
 add_action( 'wp_ajax_nopriv_petteno_tours_preventivo', 'petteno_tours_handle_preventivo' );
+
+/**
+ * Modello HTML della mail "Richiesta preventivo".
+ *
+ * Tabelle e stili in linea (compatibili con Gmail, Outlook, Apple Mail),
+ * colori del sito, pulsanti per rispondere, chiamare o scrivere su WhatsApp.
+ *
+ * @param array $f Campi già ripuliti: nome, email, telefono, persone, data, messaggio.
+ * @return string HTML della mail.
+ */
+function petteno_tours_preventivo_email_html( $f ) {
+	$blue      = '#1559b7';
+	$blue_dark = '#0f2f5c';
+	$tint      = '#eef5ff';
+	$ink       = '#1b2a41';
+	$muted     = '#5b6b82';
+	$line      = '#dbe6f5';
+
+	$tel_digits = preg_replace( '/[^0-9+]/', '', $f['telefono'] );
+	$wa_digits  = preg_replace( '/\D/', '', $f['telefono'] );
+	// Numero italiano senza prefisso internazionale: aggiungiamo il 39.
+	if ( $wa_digits && 0 !== strpos( $f['telefono'], '+' ) && 0 !== strpos( $wa_digits, '39' ) && 0 !== strpos( $wa_digits, '00' ) ) {
+		$wa_digits = '39' . $wa_digits;
+	}
+
+	$reply_subject = rawurlencode( 'Re: il tuo preventivo con Pettenò Tours' );
+	$logo          = petteno_tours_img( 'logo.png' );
+	$site          = home_url( '/' );
+
+	$row = function ( $label, $value_html ) use ( $ink, $muted, $line ) {
+		return '<tr><td style="padding:14px 0;border-bottom:1px solid ' . $line . ';">'
+			. '<div style="font:600 12px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:' . $muted . ';">' . esc_html( $label ) . '</div>'
+			. '<div style="font:400 16px/1.5 Arial,Helvetica,sans-serif;color:' . $ink . ';margin-top:4px;">' . $value_html . '</div>'
+			. '</td></tr>';
+	};
+
+	$button = function ( $href, $label, $bg, $color ) {
+		return '<a href="' . esc_url( $href ) . '" style="display:inline-block;margin:4px 6px 4px 0;padding:12px 18px;border-radius:999px;background:' . $bg . ';color:' . $color . ';font:700 14px/1 Arial,Helvetica,sans-serif;text-decoration:none;">' . esc_html( $label ) . '</a>';
+	};
+
+	$rows  = $row( 'Nome e cognome', esc_html( $f['nome'] ) );
+	$rows .= $row( 'Email', '<a href="mailto:' . esc_attr( $f['email'] ) . '" style="color:' . $blue . ';text-decoration:underline;">' . esc_html( $f['email'] ) . '</a>' );
+	$rows .= $row( 'Telefono', '<a href="tel:' . esc_attr( $tel_digits ) . '" style="color:' . $blue . ';text-decoration:underline;">' . esc_html( $f['telefono'] ) . '</a>' );
+	$rows .= $row( 'Numero di persone', $f['persone'] ? esc_html( $f['persone'] ) : '<span style="color:' . $muted . ';">—</span>' );
+	$rows .= $row( 'Data di partenza', $f['data'] ? esc_html( $f['data'] ) : '<span style="color:' . $muted . ';">—</span>' );
+
+	$buttons  = $button( 'mailto:' . $f['email'] . '?subject=' . $reply_subject, 'Rispondi via email', $blue, '#ffffff' );
+	$buttons .= $button( 'tel:' . $tel_digits, 'Chiama', $tint, $blue_dark );
+	if ( strlen( $wa_digits ) >= 8 ) {
+		$buttons .= $button( 'https://wa.me/' . $wa_digits, 'WhatsApp', '#1f9d55', '#ffffff' );
+	}
+
+	$sent = wp_date( 'j F Y, H:i' );
+
+	return '<!doctype html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>Richiesta preventivo</title></head>'
+		. '<body style="margin:0;padding:0;background:' . $tint . ';">'
+		. '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:' . $tint . ';"><tr><td align="center" style="padding:24px 12px;">'
+		. '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid ' . $line . ';">'
+		// Intestazione blu.
+		. '<tr><td style="background:' . $blue . ';padding:22px 28px;">'
+		. '<img src="' . esc_url( $logo ) . '" alt="Pettenò Tours" height="40" style="display:block;height:40px;width:auto;background:#ffffff;border-radius:8px;padding:6px 10px;">'
+		. '<div style="font:700 22px/1.3 Arial,Helvetica,sans-serif;color:#ffffff;margin-top:16px;">Nuova richiesta di preventivo</div>'
+		. '<div style="font:400 14px/1.4 Arial,Helvetica,sans-serif;color:#d6e6ff;margin-top:4px;">Ricevuta dal sito il ' . esc_html( $sent ) . '</div>'
+		. '</td></tr>'
+		// Azioni rapide.
+		. '<tr><td style="padding:20px 28px 4px;">' . $buttons . '</td></tr>'
+		// Dati.
+		. '<tr><td style="padding:4px 28px 8px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0">' . $rows . '</table></td></tr>'
+		// Messaggio.
+		. '<tr><td style="padding:8px 28px 28px;">'
+		. '<div style="font:600 12px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:' . $muted . ';margin-bottom:8px;">Viaggio e occasione</div>'
+		. '<div style="background:' . $tint . ';border-left:4px solid ' . $blue . ';border-radius:8px;padding:16px 18px;font:400 16px/1.6 Arial,Helvetica,sans-serif;color:' . $ink . ';">' . nl2br( esc_html( $f['messaggio'] ) ) . '</div>'
+		. '</td></tr>'
+		// Piè di pagina.
+		. '<tr><td style="padding:16px 28px;background:#f6f9fd;border-top:1px solid ' . $line . ';font:400 12px/1.5 Arial,Helvetica,sans-serif;color:' . $muted . ';">'
+		. 'Inviato dal modulo di <a href="' . esc_url( $site ) . '" style="color:' . $blue . ';">' . esc_html( wp_parse_url( $site, PHP_URL_HOST ) ) . '</a>. '
+		. 'Rispondendo a questa email scrivi direttamente al cliente. I dati non sono salvati sul sito.'
+		. '</td></tr>'
+		. '</table></td></tr></table></body></html>';
+}
