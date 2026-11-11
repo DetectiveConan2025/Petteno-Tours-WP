@@ -24,19 +24,31 @@ $petteno_links = petteno_tours_nav_links();
 <header class="site-header">
 	<div class="wrap header-inner">
 		<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="brand" aria-label="<?php esc_attr_e( 'Pettenò Tours — home', 'petteno-tours' ); ?>">
-			<?php if ( has_custom_logo() ) : ?>
-				<?php the_custom_logo(); ?>
-			<?php else : ?>
+			<?php
+			// Logo: quello caricato in Personalizza → Identità del sito, se c'è;
+			// altrimenti il logo Pettenò Tours incluso nel tema. Solo l'immagine
+			// (niente secondo link annidato), con le dimensioni del tema.
+			$petteno_logo_id = (int) get_theme_mod( 'custom_logo' );
+			if ( $petteno_logo_id && wp_attachment_is_image( $petteno_logo_id ) ) :
+				echo wp_get_attachment_image(
+					$petteno_logo_id,
+					'medium',
+					false,
+					array(
+						'class'   => 'brand-logo',
+						'alt'     => 'Pettenò Tours',
+						'loading' => 'eager',
+					)
+				);
+			else :
+				?>
 				<img
 					src="<?php echo esc_url( petteno_tours_img( 'logo.png' ) ); ?>"
 					alt="Pettenò Tours"
 					class="brand-logo"
-					onerror="this.style.display='none';document.getElementById('brand-fallback-h').style.display='flex'"
+					width="240"
+					height="80"
 				/>
-				<span class="brand-text" id="brand-fallback-h" style="display:none">
-					<strong>Pettenò</strong>
-					<span>Tours</span>
-				</span>
 			<?php endif; ?>
 		</a>
 
