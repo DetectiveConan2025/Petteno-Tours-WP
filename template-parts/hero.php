@@ -46,7 +46,9 @@ if ( ! $petteno_slides ) {
 	<!-- Contenuto centrato -->
 	<div class="wrap hero-content">
 		<div class="hero-copy">
-			<span class="pill pill-light"><?php echo esc_html( petteno_opt( 'hero_badge' ) ); ?></span>
+			<?php if ( petteno_opt( 'hero_badge' ) ) : // Vuoto = badge nascosto. ?>
+				<span class="pill pill-light"><?php echo esc_html( petteno_opt( 'hero_badge' ) ); ?></span>
+			<?php endif; ?>
 			<h1>
 				<?php echo esc_html( petteno_opt( 'hero_title_l1' ) ); ?><br />
 				<?php echo esc_html( petteno_opt( 'hero_title_pre' ) ); ?> <span class="accent-w"><?php echo esc_html( petteno_opt( 'hero_accent' ) ); ?></span><?php echo esc_html( petteno_opt( 'hero_title_post' ) ); ?>

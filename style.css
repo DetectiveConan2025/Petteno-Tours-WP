@@ -4,7 +4,7 @@ Theme URI: https://www.pettenotours.it
 Author: Pettenò Tours
 Author URI: https://www.pettenotours.it
 Description: Tema WordPress per Pettenò Tours — noleggio bus turistici con conducente. Replica in WordPress del sito vetrina (landing page singola, palette azzurro/bianco). Sezioni: Hero, Servizi, Flotta, Rotte scolastiche, Chi siamo, Contatti, Privacy e Cookie.
-Version: 1.7.1
+Version: 1.8.0
 Requires at least: 6.0
 Tested up to: 6.5
 Requires PHP: 7.4
@@ -1404,3 +1404,39 @@ a.ccard-value:hover { color: var(--brand-bright); text-decoration: underline; }
 .values h3 { color: #fff; }
 .values p { color: oklch(92% 0.03 240); }
 .values .dot { background: #fff; box-shadow: 0 0 0 4px oklch(100% 0 0 / 0.22); }
+
+/* ==========================================================================
+   Recensioni (v1.8)
+   ========================================================================== */
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: clamp(1rem, 2.5vw, 1.5rem);
+  margin-top: clamp(1.5rem, 3vw, 2.5rem);
+}
+.review-card {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: clamp(1.4rem, 3vw, 2rem);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+}
+.reviews.tone-light .review-card { background: var(--surface); }
+.review-stars { display: flex; gap: 0.2rem; }
+.review-stars svg { width: 1.15rem; height: 1.15rem; }
+.review-stars svg.on { fill: oklch(78% 0.16 80); }
+.review-stars svg.off { fill: var(--line); }
+.review-text { margin: 0; flex: 1; color: var(--ink-soft); font-size: 1.02rem; line-height: 1.65; }
+.review-text p { margin: 0; }
+.review-text p::before { content: "“"; }
+.review-text p::after { content: "”"; }
+.review-meta { display: flex; flex-direction: column; gap: 0.15rem; font-size: 0.92rem; }
+.review-meta strong { color: var(--ink); }
+.review-meta span { color: var(--muted); }
+.reviews-footer { margin-top: clamp(1.5rem, 3vw, 2rem); display: flex; flex-wrap: wrap; gap: 1rem 2rem; align-items: center; justify-content: space-between; }
+.reviews-footer .fleet-note { margin: 0; }
+.reviews-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.reviews-actions .btn-ghost { border: 1.5px solid var(--brand-strong); color: var(--brand-strong); background: transparent; padding-inline: 1.3rem; }

@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'PETTENO_TOURS_VERSION' ) ) {
-	define( 'PETTENO_TOURS_VERSION', '1.7.1' );
+	define( 'PETTENO_TOURS_VERSION', '1.8.0' );
 }
 
 /**
@@ -303,6 +303,14 @@ function petteno_tours_defaults() {
 		'show_flotta'      => true,
 		'show_rotte'       => true,
 		'show_chi_siamo'   => true,
+		'show_recensioni'  => true,
+
+		// --- Recensioni (le schede si gestiscono dal menu "Recensioni") ---
+		'rev_kicker'       => 'Dicono di noi',
+		'rev_title'        => 'Cosa dicono i nostri clienti',
+		'rev_note'         => 'Recensioni dei nostri clienti, riportate dal nostro profilo Google.',
+		'rev_google_url'   => '',
+		'rev_write_url'    => '',
 
 		// --- Rotte scolastiche (sezione attivabile/disattivabile) ---
 		'rotte_kicker'     => 'Servizio scolastico',
@@ -491,6 +499,9 @@ require get_template_directory() . '/inc/customizer.php';
 
 // Tipo di contenuto "Mezzi" (flotta gestita dall'admin).
 require get_template_directory() . '/inc/post-types.php';
+
+// Recensioni dei clienti (menu "Recensioni" + sezione in home).
+require get_template_directory() . '/inc/reviews.php';
 
 // Pagine Privacy e Cookie (create alla prima attivazione, modificabili).
 require get_template_directory() . '/inc/legal-pages.php';

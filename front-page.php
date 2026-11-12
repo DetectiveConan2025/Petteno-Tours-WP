@@ -20,10 +20,15 @@ get_header();
 		'show_flotta'    => 'template-parts/fleet',
 		'show_rotte'     => 'template-parts/routes-teaser',
 		'show_chi_siamo' => 'template-parts/about',
+		'show_recensioni' => 'template-parts/reviews',
 	);
 	$petteno_i = 0;
 	foreach ( $petteno_sections as $petteno_key => $petteno_part ) {
 		if ( ! petteno_show( $petteno_key ) ) {
+			continue;
+		}
+		// Le recensioni compaiono solo se ce n'è almeno una pubblicata.
+		if ( 'show_recensioni' === $petteno_key && ! petteno_tours_get_reviews() ) {
 			continue;
 		}
 		get_template_part( $petteno_part, null, array( 'tone' => ( 0 === $petteno_i % 2 ) ? 'tone-light' : 'tone-tint' ) );

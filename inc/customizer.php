@@ -257,6 +257,22 @@ function petteno_tours_customize_register( $wp ) {
 	}
 	petteno_tours_add_text( $wp, 'petteno_flotta', 'fleet_note', __( 'Nota a piè di sezione', 'petteno-tours' ), 'textarea' );
 
+	/* ---- Recensioni ---------------------------------------------------- */
+	$wp->add_section(
+		'petteno_recensioni',
+		array(
+			'title'       => __( 'Recensioni', 'petteno-tours' ),
+			'panel'       => 'petteno_tours',
+			'description' => __( 'Le recensioni si aggiungono dal menu "Recensioni" (copiatele fedelmente dal profilo Google: solo recensioni vere, nome e iniziale del cognome). La sezione compare in home solo se c\'è almeno una recensione pubblicata.', 'petteno-tours' ),
+		)
+	);
+	petteno_tours_add_checkbox( $wp, 'petteno_recensioni', 'show_recensioni', __( 'Mostra questa sezione nel sito', 'petteno-tours' ) );
+	petteno_tours_add_text( $wp, 'petteno_recensioni', 'rev_kicker', __( 'Occhiello', 'petteno-tours' ) );
+	petteno_tours_add_text( $wp, 'petteno_recensioni', 'rev_title', __( 'Titolo', 'petteno-tours' ) );
+	petteno_tours_add_text( $wp, 'petteno_recensioni', 'rev_google_url', __( 'Link "Leggi tutte le recensioni su Google" (scheda Google Maps)', 'petteno-tours' ), 'url' );
+	petteno_tours_add_text( $wp, 'petteno_recensioni', 'rev_write_url', __( 'Link "Lascia una recensione" (da Google Business Profile → Chiedi recensioni)', 'petteno-tours' ), 'url' );
+	petteno_tours_add_text( $wp, 'petteno_recensioni', 'rev_note', __( 'Nota sulla provenienza delle recensioni (obbligatoria per legge: non lasciarla vuota)', 'petteno-tours' ), 'textarea' );
+
 	/* ---- Rotte scolastiche (sezione attivabile/disattivabile) ---------- */
 	$wp->add_section( 'petteno_rotte', array( 'title' => __( 'Rotte scolastiche', 'petteno-tours' ), 'panel' => 'petteno_tours', 'description' => __( 'La tabella completa vive in una pagina dedicata (creata automaticamente, linkabile a sé stante per i bandi); qui in home resta solo un richiamo. Disattiva l’interruttore per nasconderlo dallo scroll.', 'petteno-tours' ) ) );
 	petteno_tours_add_checkbox( $wp, 'petteno_rotte', 'show_rotte', __( 'Mostra questa sezione nel sito', 'petteno-tours' ) );
